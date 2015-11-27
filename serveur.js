@@ -1,6 +1,8 @@
 var Engine = require('tingodb')(),
     assert = require('assert');
-var db = new Engine.Db('/home/nicolas/REPO/Node_TODO/db', {});
+
+//Relative path : should always work
+var db = new Engine.Db('db', {});
 
 var express=require('express');
 
