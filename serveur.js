@@ -12,7 +12,9 @@ var express=require('express');
 
 var app =express();
 
+
 var collection = db.collection("todolist");
+var resultats=Object();
 
 app
 .use(express.cookieParser())
@@ -26,10 +28,12 @@ app
 
 
 .get('/todo', function(req,res) {
-	theValues=collection.find({}).toArray(function(err, items) {
-		res.render('todo.ejs', {todolist: items});
+	collection.find({}).toArray(function(err, items) {
+		resultats.mongodb=items;
+		logger.debug("Mongodb : " + resultats.mongodb);
+	    res.render('todo.ejs', {objectResult: resultats});
+
 	});
-	
 })
 
 .post('/todo/ajouter/', function(req, res) {
