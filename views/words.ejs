@@ -1,17 +1,21 @@
 <html>
 <head>
-	<title>ToDo List</title>
+	<title>Word list</title>
 
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-<%
-	console.log(objectResult.mongodb);
-%>
 
 	<ul>
 	<% objectResult.mongodb.forEach(function(item) { %>
-		<li> <a href='/todo/supprimer/<%= item._id%>'><%= item.todo %></a>
+		<li><%= item.word %> - <%= item.frequency %>
+			<% 
+				if (typeof(item.cluster) != "undefined") {
+			%>
+			<%= "Keyword of cluster : " + item.cluster %>
+			<%
+				}
+			%>
 	<% }); %>
 	</ul>
 	<form action='/todo/ajouter/' method='post'>
