@@ -7,6 +7,8 @@ database.populate();
 logger.info(database.collection_list);
 
 var barchart = require('barchart');
+var marimekko=require('marimekko');
+var embeddedCircle=require('embeddedCircle');
 
 var d3 = require('d3'), 
 jsdom = require('jsdom'),
@@ -66,7 +68,10 @@ app
 	});	
 })
 
-.get('/circle', function(req,res){
+//---------------------/simple-circle---------------------------------------------------
+//---------------------/simple-circle---------------------------------------------------
+//---------------------/simple-circle---------------------------------------------------
+.get('/simple-circle', function(req,res){
 	jsdom.env(
 		dataviz,
 		function(errors, window) {
@@ -94,6 +99,108 @@ app
 	);
 })
 
+//---------------------/marimekko---------------------------------------------------
+//---------------------/marimekko---------------------------------------------------
+//---------------------/marimekko---------------------------------------------------
+.get('/marimekko', function(req,res){
+	data_marimekko=[{"market": "Auburn, AL", "segment": "Almond lovers", "value": 3840},
+		{"market": "Auburn, AL", "segment": "Berry buyers", "value": 1920},
+		{"market": "Auburn, AL", "segment": "Carrots-n-more", "value": 960},
+		{"market": "Auburn, AL", "segment": "Delicious-n-new", "value": 400},
+		{"market": "Birmingham, AL", "segment": "Almond lovers", "value": 1600},
+		{"market": "Birmingham, AL", "segment": "Berry buyers", "value": 1440},
+		{"market": "Birmingham, AL", "segment": "Carrots-n-more", "value": 960},
+		{"market": "Birmingham, AL", "segment": "Delicious-n-new", "value": 400},
+		{"market": "Gainesville, FL", "segment": "Almond lovers", "value": 640},
+		{"market": "Gainesville, FL", "segment": "Berry buyers", "value": 960},
+		{"market": "Gainesville, FL", "segment": "Carrots-n-more", "value": 640},
+		{"market": "Gainesville, FL", "segment": "Delicious-n-new", "value": 400},
+		{"market": "Durham, NC", "segment": "Almond lovers", "value": 320},
+		{"market": "Durham, NC", "segment": "Berry buyers", "value": 480},
+		{"market": "Durham, NC", "segment": "Carrots-n-more", "value": 640},
+		{"market": "Durham, NC", "segment": "Delicious-n-new", "value": 400}
+		];
+	marimekko.chart(data_marimekko, 1000,500,30,res);
+
+})
+
+//---------------------/circles---------------------------------------------------
+//---------------------/circles---------------------------------------------------
+//---------------------/circles---------------------------------------------------
+.get('/circles', function(req,res){
+	data_circles=
+		{
+		 "name": "flare",
+		 "children": [
+		  {
+		   "name": "animate",
+		   "children": [
+		    {"name": "Easing", "size": 17010},
+		    {"name": "FunctionSequence", "size": 5842},
+		    {
+		     "name": "interpolate",
+		     "children": [
+		      {"name": "ArrayInterpolator", "size": 1983},
+		      {"name": "ColorInterpolator", "size": 2047},
+		      {"name": "DateInterpolator", "size": 1375},
+		      {"name": "Interpolator", "size": 8746},
+		      {"name": "MatrixInterpolator", "size": 2202},
+		      {"name": "NumberInterpolator", "size": 1382},
+		      {"name": "ObjectInterpolator", "size": 1629},
+		      {"name": "PointInterpolator", "size": 1675},
+		      {"name": "RectangleInterpolator", "size": 2042}
+		     ]
+		    },
+		    {"name": "ISchedulable", "size": 1041},
+		    {"name": "Parallel", "size": 5176},
+		    {"name": "Pause", "size": 449},
+		    {"name": "Scheduler", "size": 5593},
+		    {"name": "Sequence", "size": 5534},
+		    {"name": "Transition", "size": 9201},
+		    {"name": "Transitioner", "size": 19975},
+		    {"name": "TransitionEvent", "size": 1116},
+		    {"name": "Tween", "size": 6006}
+		   ]
+		  },
+		  {
+		   "name": "data",
+		   "children": [
+		    {
+		     "name": "converters",
+		     "children": [
+		      {"name": "Converters", "size": 721},
+		      {"name": "DelimitedTextConverter", "size": 4294},
+		      {"name": "GraphMLConverter", "size": 9800},
+		      {"name": "IDataConverter", "size": 1314},
+		      {"name": "JSONConverter", "size": 2220}
+		     ]
+		    },
+		    {"name": "DataField", "size": 1759},
+		    {"name": "DataSchema", "size": 2165},
+		    {"name": "DataSet", "size": 586},
+		    {"name": "DataSource", "size": 3331},
+		    {"name": "DataTable", "size": 772},
+		    {"name": "DataUtil", "size": 3322}
+		   ]
+		  },
+		  {
+		   "name": "display",
+		   "children": [
+		    {"name": "DirtySprite", "size": 8833},
+		    {"name": "LineSprite", "size": 1732},
+		    {"name": "RectSprite", "size": 3623},
+		    {"name": "TextSprite", "size": 10066}
+		   ]
+		  }
+		  ]
+		};
+	embeddedCircle.chart(data_circles, 600,res);
+
+})
+
+//---------------------/barchart---------------------------------------------------
+//---------------------/barchart---------------------------------------------------
+//---------------------/barchart---------------------------------------------------
 .get('/barchart', function(req,res){
 	var dataset=[10,20,30,12,52,17,8,3,35,42,67,8];
 	barchart.chart(dataset,800,300,50,20,res);
