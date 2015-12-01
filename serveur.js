@@ -6,6 +6,8 @@ var database = require('db');
 database.populate();
 logger.info(database.collection_list);
 
+var barchart = require('barchart');
+
 var d3 = require('d3'), 
 jsdom = require('jsdom'),
 dataviz='<div id="dataviz-container"></div>';
@@ -93,45 +95,8 @@ app
 })
 
 .get('/barchart', function(req,res){
-	var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13, 11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
-	jsdom.env(
-		dataviz,
-		function(errors, window) {
-			var el = window.document.querySelector('#dataviz-container');
-			width=800;
-			svg = d3.select(el).append("svg")
-		        .attr("width", width)
-		        .attr("height", 100);
-		    svg.selectAll("rect")
-			   .data(dataset)
-			   .enter()
-			   .append("rect")
-			   .attr("x", function(d, i) {
-				    return i * ( width / dataset.length);
-				})
-			   .attr("y", 50)
-			   .attr("width", width / dataset.length - 2)
-			   .attr("height", function(d) {
-				    return d;
-				});
-
-			svg.selectAll("text").data(dataset).enter()
-				.append("text")
-			    .attr("x", function(d, i) {
-				    return i * ( width / dataset.length) + width / dataset.length /2;
-				})
-			    .attr("y", 20)
-			    .style("text-anchor", "middle")
-            	.style("font-size", "10px")
-            	.style("font-family", "sans-serif")
-            	.style("color", "black")
-			    .text(function (d) {
-			    	return d;
-				});
-			var svgsrc = window.document.querySelector('#dataviz-container').innerHTML;
-			res.render('barchart.ejs', {objectResult: svgsrc});
-		}
-	)
+	var dataset=[10,20,30,12,52,17,8,3,35,42,67,8];
+	barchart.chart(dataset,800,300,50,20,res);
 })
 
 //---------------------DEFAULT---------------------------------------------------
