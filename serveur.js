@@ -104,22 +104,20 @@ app
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
 .get('/marimekko', function(req,res){
-	data_marimekko=[{"market": "Auburn, AL", "segment": "Almond lovers", "value": 3840},
-		{"market": "Auburn, AL", "segment": "Berry buyers", "value": 1920},
-		{"market": "Auburn, AL", "segment": "Carrots-n-more", "value": 960},
-		{"market": "Auburn, AL", "segment": "Delicious-n-new", "value": 400},
-		{"market": "Birmingham, AL", "segment": "Almond lovers", "value": 1600},
-		{"market": "Birmingham, AL", "segment": "Berry buyers", "value": 1440},
-		{"market": "Birmingham, AL", "segment": "Carrots-n-more", "value": 960},
-		{"market": "Birmingham, AL", "segment": "Delicious-n-new", "value": 400},
-		{"market": "Gainesville, FL", "segment": "Almond lovers", "value": 640},
-		{"market": "Gainesville, FL", "segment": "Berry buyers", "value": 960},
-		{"market": "Gainesville, FL", "segment": "Carrots-n-more", "value": 640},
-		{"market": "Gainesville, FL", "segment": "Delicious-n-new", "value": 400},
-		{"market": "Durham, NC", "segment": "Almond lovers", "value": 320},
-		{"market": "Durham, NC", "segment": "Berry buyers", "value": 480},
-		{"market": "Durham, NC", "segment": "Carrots-n-more", "value": 640},
-		{"market": "Durham, NC", "segment": "Delicious-n-new", "value": 400}
+	data_marimekko=[{"feature": "Caregivers", "cluster": "Cluster1", "value": 3840},
+		{"feature": "Mice", "cluster": "Cluster2", "value": 1920},
+		{"feature": "Brain", "cluster": "Cluster1", "value": 1600},
+		{"feature": "Rat", "cluster": "Cluster2", "value": 1440},
+		{"feature": "Brain", "cluster": "Cluster3", "value": 960},
+		{"feature": "Blood", "cluster": "Cluster4", "value": 400},
+		{"feature": "Liver", "cluster": "Cluster1", "value": 640},
+		{"feature": "Cancer", "cluster": "Cluster2", "value": 960},
+		{"feature": "Nurse", "cluster": "Cluster3", "value": 640},
+		{"feature": "Depression", "cluster": "Cluster4", "value": 400},
+		{"feature": "Neuroscience", "cluster": "Cluster1", "value": 320},
+		{"feature": "Surgery", "cluster": "Cluster2", "value": 480},
+		{"feature": "Hospital", "cluster": "Cluster3", "value": 640},
+		{"feature": "Life", "cluster": "Cluster4", "value": 400}
 		];
 	marimekko.chart(data_marimekko, 1000,500,30,res);
 
