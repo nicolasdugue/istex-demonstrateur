@@ -11,20 +11,23 @@
 
 	<script type="text/javascript">
 			function mouseover(p) {
-				var g = d3.select(this).node().parentNode;
+				var g = d3.select(this).node();
 				d3.select(g).selectAll("circle").style("display","none");
 				d3.select(g).selectAll("text.value").style("display","block");
 			};
 
 			function mouseout(p) {
-				var g = d3.select(this).node().parentNode;
+				var g = d3.select(this).node();
 				d3.select(g).selectAll("circle").style("display","block");
 				d3.select(g).selectAll("text.value").style("display","none");
 			};
 
-			var g = d3.selectAll(".label");
+			var g = d3.selectAll(".journal");
 			g.on("mouseover", mouseover)
 			.on("mouseout", mouseout);
+			/*var g = d3.selectAll(".value");
+			g.on("mouseover", mouseover)
+			.on("mouseout", mouseout);*/
 		</script>
 
 
