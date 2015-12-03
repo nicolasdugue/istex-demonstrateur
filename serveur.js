@@ -207,8 +207,8 @@ app
 //---------------------/barchart---------------------------------------------------
 //---------------------/barchart---------------------------------------------------
 .get('/barchart', function(req,res){
-	var dataset=[10,20,30,12,52,17,8,3,35,42,67,8];
-	barchart.chart(dataset,800,300,50,20,res);
+	var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
+	barchart.chart(dataset,700,300,50,20,res);
 })
 
 //---------------------DEFAULT---------------------------------------------------
