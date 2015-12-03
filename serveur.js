@@ -125,73 +125,44 @@ app
 //---------------------/circles---------------------------------------------------
 //---------------------/circles---------------------------------------------------
 .get('/circles', function(req,res){
-	data_circles=
+	kernel=
 		{
-		 "name": "flare",
-		 "children": [
-		  {
-		   "name": "animate",
+		   "name": "Kernel",
 		   "children": [
-		    {"name": "Easing", "size": 17010},
-		    {"name": "FunctionSequence", "size": 5842},
-		    {
-		     "name": "interpolate",
-		     "children": [
-		      {"name": "ArrayInterpolator", "size": 1983},
-		      {"name": "ColorInterpolator", "size": 2047},
-		      {"name": "DateInterpolator", "size": 1375},
-		      {"name": "Interpolator", "size": 8746},
-		      {"name": "MatrixInterpolator", "size": 2202},
-		      {"name": "NumberInterpolator", "size": 1382},
-		      {"name": "ObjectInterpolator", "size": 1629},
-		      {"name": "PointInterpolator", "size": 1675},
-		      {"name": "RectangleInterpolator", "size": 2042}
-		     ]
-		    },
-		    {"name": "ISchedulable", "size": 1041},
-		    {"name": "Parallel", "size": 5176},
-		    {"name": "Pause", "size": 449},
-		    {"name": "Scheduler", "size": 5593},
-		    {"name": "Sequence", "size": 5534},
-		    {"name": "Transition", "size": 9201},
-		    {"name": "Transitioner", "size": 19975},
-		    {"name": "TransitionEvent", "size": 1116},
-		    {"name": "Tween", "size": 6006}
-		   ]
-		  },
-		  {
-		   "name": "data",
-		   "children": [
-		    {
-		     "name": "converters",
-		     "children": [
-		      {"name": "Converters", "size": 721},
-		      {"name": "DelimitedTextConverter", "size": 4294},
-		      {"name": "GraphMLConverter", "size": 9800},
-		      {"name": "IDataConverter", "size": 1314},
-		      {"name": "JSONConverter", "size": 2220}
-		     ]
-		    },
-		    {"name": "DataField", "size": 1759},
-		    {"name": "DataSchema", "size": 2165},
-		    {"name": "DataSet", "size": 586},
-		    {"name": "DataSource", "size": 3331},
-		    {"name": "DataTable", "size": 772},
-		    {"name": "DataUtil", "size": 3322}
-		   ]
-		  },
-		  {
-		   "name": "display",
-		   "children": [
-		    {"name": "DirtySprite", "size": 8833},
-		    {"name": "LineSprite", "size": 1732},
-		    {"name": "RectSprite", "size": 3623},
-		    {"name": "TextSprite", "size": 10066}
+		    {"name": "Liver", "size": 17010},
+		    {"name": "Brain", "size": 5842},
+		    {"name": "ADN", "size": 1041},
+		    {"name": "Sequence", "size": 5176},
+		    {"name": "Blood", "size": 449},
+		    {"name": "Heart", "size": 5593},
+		    {"name": "Pump", "size": 5534},
+		    {"name": "Neurology", "size": 9201},
+		    {"name": "Surgery", "size": 19975},
 		   ]
 		  }
-		  ]
-		};
-	embeddedCircle.chart(data_circles, 600,res);
+		;
+	source={
+		   "name": "Prevalent in source",
+		   "children": [
+		    {"name": "Caregivers", "size": 1759},
+		    {"name": "Nurse", "size": 2165},
+		    {"name": "Hospital", "size": 586},
+		    {"name": "Familly", "size": 3331},
+		    {"name": "Senescence", "size": 772},
+		    {"name": "Woman", "size": 3322}
+		   ]
+		  };
+	target={
+		   "name": "Prevalent in target",
+		   "children": [
+		    {"name": "Mices", "size": 8833},
+		    {"name": "Rats", "size": 1732},
+		    {"name": "Meds", "size": 3623},
+		    {"name": "Cell", "size": 10066}
+		   ]
+		  }
+		  ;
+	embeddedCircle.chart([kernel,source,target], 250,res);
 
 })
 
