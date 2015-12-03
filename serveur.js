@@ -4,7 +4,6 @@ var app =express();
 
 var database = require('db');
 database.populate();
-logger.info(database.collection_list);
 
 var barchart = require('barchart');
 var marimekko=require('marimekko');
@@ -94,7 +93,6 @@ app
 						.attr('id', circleId); // say, this value was dynamically retrieved from some database
 			// save result in an html file, we could also keep it in memory, or export the interesting fragment into a database for later use
 			var svgsrc = window.document.querySelector('#dataviz-container').innerHTML;
-			logger.info(svgsrc);
 			res.render('circle.ejs', {objectResult: svgsrc});
 		}
 	);
@@ -104,20 +102,20 @@ app
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
 .get('/marimekko', function(req,res){
-	data_marimekko=[{"feature": "Caregivers", "cluster": "Cluster1", "value": 3840},
-		{"feature": "Mice", "cluster": "Cluster2", "value": 1920},
-		{"feature": "Brain", "cluster": "Cluster1", "value": 1600},
-		{"feature": "Rat", "cluster": "Cluster2", "value": 1440},
-		{"feature": "Brain", "cluster": "Cluster3", "value": 960},
-		{"feature": "Blood", "cluster": "Cluster4", "value": 400},
-		{"feature": "Liver", "cluster": "Cluster1", "value": 640},
-		{"feature": "Cancer", "cluster": "Cluster2", "value": 960},
-		{"feature": "Nurse", "cluster": "Cluster3", "value": 640},
-		{"feature": "Depression", "cluster": "Cluster4", "value": 400},
-		{"feature": "Neuroscience", "cluster": "Cluster1", "value": 320},
-		{"feature": "Surgery", "cluster": "Cluster2", "value": 480},
-		{"feature": "Hospital", "cluster": "Cluster3", "value": 640},
-		{"feature": "Life", "cluster": "Cluster4", "value": 400}
+	data_marimekko=[{"feature": "Caregivers", "cluster": "Cluster1", "value": 7.9},
+		{"feature": "Mice", "cluster": "Cluster2", "value": 3.2},
+		{"feature": "Brain", "cluster": "Cluster1", "value": 6.5},
+		{"feature": "Rat", "cluster": "Cluster2", "value": 8},
+		{"feature": "Brain", "cluster": "Cluster3", "value": 1.8},
+		{"feature": "Blood", "cluster": "Cluster4", "value": 2.6},
+		{"feature": "Liver", "cluster": "Cluster1", "value":4.35},
+		{"feature": "Cancer", "cluster": "Cluster2", "value": 6.9},
+		{"feature": "Nurse", "cluster": "Cluster3", "value": 6.1},
+		{"feature": "Depression", "cluster": "Cluster4", "value": 3.152},
+		{"feature": "Neuroscience", "cluster": "Cluster1", "value": 2.8},
+		{"feature": "Surgery", "cluster": "Cluster2", "value": 5.72},
+		{"feature": "Hospital", "cluster": "Cluster3", "value": 4.72},
+		{"feature": "Life", "cluster": "Cluster4", "value": 6.28}
 		];
 	marimekko.chart(data_marimekko, 1000,500,30,res);
 
