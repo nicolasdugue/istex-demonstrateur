@@ -1,0 +1,203 @@
+[
+   {
+      "Cluster source":"Classe 3",
+      "state":"vanished"
+   },
+   {
+      "Cluster Source":"Classe 2",
+      "Cluster Target":"Classe 7",
+      "Kernel Labels":[
+         {
+            "label":"depression",
+            "fSource":4.196748,
+            "fTarget":3.334645
+         },
+         {
+            "label":"care",
+            "fSource":3.634905,
+            "fTarget":4.079348
+         },
+         {
+            "label":"intervention",
+            "fSource":3.13644,
+            "fTarget":3.186508
+         },
+         {
+            "label":"family",
+            "fSource":2.91859,
+            "fTarget":4.01769
+         },
+         {
+            "label":"behavior",
+            "fSource":2.581666,
+            "fTarget":3.212555
+         }
+      ],
+      "Common Labels prevalent in Source":[
+
+      ],
+      "Common Labels prevalent in Target":[
+         {
+            "label":"caregiver",
+            "fSource":2.73597,
+            "fTarget":6.662058
+         }
+      ],
+      "Activity probability : s to t":0.15609953,
+      "Activity probability : t to s":0.8865921
+   },
+   {
+      "Cluster Source":"Classe 2",
+      "Cluster Target":"Classe 8",
+      "Kernel Labels":[
+         {
+            "label":"medical",
+            "fSource":3.395593,
+            "fTarget":3.507038
+         }
+      ],
+      "Common Labels prevalent in Source":[
+
+      ],
+      "Common Labels prevalent in Target":[
+         {
+            "label":"patient",
+            "fSource":3.474512,
+            "fTarget":7.637563
+         }
+      ],
+      "Activity probability : s to t":0.05584265,
+      "Activity probability : t to s":0.67641294
+   },
+   {
+      "Cluster Source":"Classe 2",
+      "Cluster Target":"Classe 9",
+      "Kernel Labels":[
+         {
+            "label":"resident",
+            "fSource":3.70191,
+            "fTarget":7.037563
+         },
+         {
+            "label":"home",
+            "fSource":3.57801,
+            "fTarget":6.377089
+         }
+      ],
+      "Common Labels prevalent in Source":[
+
+      ],
+      "Common Labels prevalent in Target":[
+         {
+            "label":"nursing_home",
+            "fSource":2.944626,
+            "fTarget":6.950227
+         },
+         {
+            "label":"nursing",
+            "fSource":2.881595,
+            "fTarget":6.707346
+         }
+      ],
+      "Activity probability : s to t":0.10653137,
+      "Activity probability : t to s":0.5911735
+   },
+   {
+      "Cluster Source":"Classe 0",
+      "Cluster Target":"Classe 4",
+      "Kernel Labels":[
+         {
+            "label":"mouse",
+            "fSource":3.673106,
+            "fTarget":3.887166
+         },
+         {
+            "label":"protein",
+            "fSource":3.44009,
+            "fTarget":5.792922
+         },
+         {
+            "label":"age-relate",
+            "fSource":2.903969,
+            "fTarget":3.034294
+         },
+         {
+            "label":"stress",
+            "fSource":2.893639,
+            "fTarget":3.86719
+         },
+         {
+            "label":"age",
+            "fSource":2.613655,
+            "fTarget":2.930223
+         }
+      ],
+      "Common Labels prevalent in Source":[
+
+      ],
+      "Common Labels prevalent in Target":[
+
+      ],
+      "Activity probability : s to t":0.15439975,
+      "Activity probability : t to s":0.52226454
+   },
+   {
+      "Cluster Source":"Classe 4",
+      "Cluster Target":"Classe 1",
+      "Kernel Labels":[
+         {
+            "label":"woman",
+            "fSource":4.579293,
+            "fTarget":4.601817
+         },
+         {
+            "label":"index",
+            "fSource":2.404654,
+            "fTarget":3.332283
+         }
+      ],
+      "Common Labels prevalent in Source":[
+
+      ],
+      "Common Labels prevalent in Target":[
+
+      ],
+      "Activity probability : s to t":0.08808957,
+      "Activity probability : t to s":0.4588509
+   },
+   {
+      "Cluster Source":"Classe 1",
+      "Cluster Target":"Classe 6",
+      "Kernel Labels":[
+         {
+            "label":"task",
+            "fSource":2.682985,
+            "fTarget":4.036461
+         }
+      ],
+      "Common Labels prevalent in Source":[
+
+      ],
+      "Common Labels prevalent in Target":[
+
+      ],
+      "Activity probability : s to t":0.07103366,
+      "Activity probability : t to s":0.13271397
+   },
+   {
+      "Cluster target":"Classe 0",
+      "state":"appeared"
+   },
+   {
+      "Cluster target":"Classe 2",
+      "state":"appeared"
+   },
+   {
+      "Cluster target":"Classe 3",
+      "state":"appeared"
+   },
+   {
+      "Cluster target":"Classe 5",
+      "state":"appeared"
+   }
+]

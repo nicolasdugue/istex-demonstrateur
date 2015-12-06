@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<script src="libjs/d3.min.js"></script>
+		
+		<style>
+			.SrcList {
+			  fill: rgb(31, 119, 180);
+			  fill-opacity: .10;
+			  stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			}
+
+			.TargetList {
+			   fill: #ff7f0e;
+			  fill-opacity: 0.2;
+			  stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			}
+
+			.ClusterSource {
+				 stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			  fill: rgb(31, 119, 180);
+			  fill-opacity: .25;
+			}
+
+			.ClusterTarget {
+				 stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			  fill: #ff7f0e;
+			  fill-opacity: 0.8;
+			}
+
+			text {
+			  font: 10px sans-serif;
+			}
+		</style>
+	</head>
+
+<body>
+
+	<%- objectResult %>
+
+	<script type="text/javascript">
+			var dataviz='#dataviz-container';
+			function opacityHigh(object) {
+				object.style("stroke-opacity","1");
+			};
+			function opacityLow(object) {
+				object.style("stroke-opacity","0.2");
+			}
+			function mouseoverLine() {
+				var line = d3.select(this);
+				opacityHigh(line);
+			};
+			function mouseoutLine() {
+				var line = d3.select(this);
+				opacityLow(line);
+			};
+			var lines = d3.selectAll("line");
+			lines.on("mouseover", mouseoverLine)
+			.on("mouseout", mouseoutLine);
+
+			function mouseoverSrc() {
+				classe=d3.select(this).attr("title");
+				d3.selectAll("[src="+classe+"]")
+				.style("stroke-opacity",function(d,i) { return 1;});
+			};
+			function mouseoutSrc() {
+				classe=d3.select(this).attr("title");
+				d3.selectAll("[src="+classe+"]")
+				.style("stroke-opacity","0.2");
+			};
+			var clusterSources = d3.selectAll(".ClusterSource");
+			clusterSources.on("mouseover", mouseoverSrc)
+			.on("mouseout", mouseoutSrc);
+		</script>
+
+
+</body>
+</html>
