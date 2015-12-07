@@ -38,9 +38,8 @@ app
 .get('/todo', function(req,res) {
 	logger.debug("/todo");
 	database.find("todolist").toArray(function(err, items) {
-			logger.debug(items);
 			resultats.mongodb=items;
-			res.render('todo.ejs', {objectResult: resultats});
+			res.render('todo.ejs', {objectResult: resultats, "todo" : req.body.newtodo,  layout: 'layout' });
 		});	
 })
 //---------------------/todoajouter---------------------------------------------------
@@ -48,7 +47,7 @@ app
 //---------------------/todoajouter---------------------------------------------------
 .post('/todo/ajouter/', function(req, res) {
 	if (req.body.newtodo != '') {
-		database.insert("todolist", {"todo" : req.body.newtodo});
+		database.insert("todolist");
 	}
 	res.redirect('/todo');
 })
@@ -65,9 +64,7 @@ app
 //---------------------/words---------------------------------------------------
 //---------------------/words---------------------------------------------------
 .get('/words', function(req,res){
-	logger.debug("/words");
 	database.find("words").toArray(function(err, items) {
-		logger.debug(items);
 		resultats.mongodb=items;
 		res.render('words.ejs', {objectResult: resultats});
 	});	
@@ -167,7 +164,7 @@ app
 		   ]
 		  }
 		  ;
-	embeddedCircle.chart([kernel,source,target], 250,res);
+	embeddedCircle.chart([kernel,source,target], 350,res);
 
 })
 
@@ -176,7 +173,7 @@ app
 //---------------------/timeline---------------------------------------------------
 .get('/timeline', function(req,res){
 	data_timeline=[{"frequency" : [["P1",250],["P2",300],["P3",400]], "total": 950, "name": "Caregiver"},{"frequency" : [["P1",125],["P2",100],["P3",25]], "total": 250, "name": "Nurse"},{"frequency" : [["P1",175],["P2",135],["P3",125]], "total": 435, "name": "Brain"},{"frequency" : [["P1",125],["P2",175],["P3",25]], "total": 250, "name": "Liver"},{"frequency" : [["P1",125],["P2",175],["P3",225]], "total": 250, "name": "Blood"},{"frequency" : [["P1",125],["P2",175],["P3",325]], "total": 250, "name": "Cancer"}];
-	timeline.chart(data_timeline, 600, 650, 2005, 2013, 30,res);
+	timeline.chart(data_timeline, 900, 600, 2005, 2013, 30,res);
 })
 
 //---------------------/barchart---------------------------------------------------
@@ -184,7 +181,7 @@ app
 //---------------------/barchart---------------------------------------------------
 .get('/barchart', function(req,res){
 	var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
-	barchart.chart(dataset,700,300,50,20,res);
+	barchart.chart(dataset,700,200,50,20,res);
 })
 
 //---------------------/diachro---------------------------------------------------
@@ -207,7 +204,7 @@ app
 		clustersSrc[src].addTarget(clustersTarget[target]);
 		clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
 	}
-	bipartite.chart(clustersSrc,clustersTarget, 800, 400,50,20, res);
+	bipartite.chart(clustersSrc,clustersTarget, 1200, 400,50,20, res);
 })
 
 //---------------------DEFAULT---------------------------------------------------
