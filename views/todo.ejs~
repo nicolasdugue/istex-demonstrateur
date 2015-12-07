@@ -1,0 +1,14 @@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<% layout('layout') -%>
+
+	<ul>
+	<% objectResult.mongodb.forEach(function(item) { %>
+		<li> <a href='/todo/supprimer/<%= item._id%>'><%= item.todo %></a>
+	<% }); %>
+	</ul>
+	<form action='/todo/ajouter/' method='post'>
+		<input type='text' name='newtodo'/>
+		<input type='submit' value="submit" /> 
+	</form>
+
