@@ -45,17 +45,23 @@
 			var dataviz='#dataviz-container';
 			function opacityHigh(object) {
 				object.style("stroke-opacity","1");
+				object.style("fill-opacity","1");
 			};
 			function opacityLow(object) {
 				object.style("stroke-opacity","0.2");
+				object.style("fill-opacity","0.2");
 			}
 			function mouseoverLine() {
 				var line = d3.select(this);
 				opacityHigh(line);
+				text=d3.select("#"+line.attr("src")+line.attr("target"));
+				opacityHigh(text);
 			};
 			function mouseoutLine() {
 				var line = d3.select(this);
 				opacityLow(line);
+				text=d3.select("#"+line.attr("src")+line.attr("target"));
+				opacityLow(text);
 			};
 			var lines = d3.selectAll("line");
 			lines.on("mouseover", mouseoverLine)
@@ -64,12 +70,14 @@
 			function mouseoverSrc() {
 				classe=d3.select(this).attr("title");
 				d3.selectAll("[src="+classe+"]")
-				.style("stroke-opacity",function(d,i) { return 1;});
+				.style("stroke-opacity",function(d,i) { return 1;})
+				.style("fill-opacity",function(d,i) { return 1;});
 			};
 			function mouseoutSrc() {
 				classe=d3.select(this).attr("title");
 				d3.selectAll("[src="+classe+"]")
-				.style("stroke-opacity","0.2");
+				.style("stroke-opacity","0.2")
+				.style("fill-opacity","0.2");
 			};
 			var clusterSources = d3.selectAll(".ClusterSource");
 			clusterSources.on("mouseover", mouseoverSrc)

@@ -205,6 +205,7 @@ app
 			clustersTarget[target] = new model.Cluster(target);
 		}
 		clustersSrc[src].addTarget(clustersTarget[target]);
+		clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
 	}
 	bipartite.chart(clustersSrc,clustersTarget, 800, 400,50,20, res);
 })
