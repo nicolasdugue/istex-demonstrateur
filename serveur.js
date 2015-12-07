@@ -9,10 +9,15 @@ var barchart = require('barchart');
 var marimekko=require('marimekko');
 var embeddedCircle=require('embeddedCircle');
 var timeline=require('timeline');
+var bipartite=require('bipartite');
+
+var model=require("clusters");
 
 var d3 = require('d3'), 
 jsdom = require('jsdom'),
 dataviz='<div id="dataviz-container"></div>';
+
+
 
 var resultats=Object();
 
@@ -180,6 +185,28 @@ app
 .get('/barchart', function(req,res){
 	var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
 	barchart.chart(dataset,700,300,50,20,res);
+})
+
+//---------------------/diachro---------------------------------------------------
+//---------------------/diachro---------------------------------------------------
+//---------------------/diachro---------------------------------------------------
+.get('/diachronie', function(req,res){
+	var parsedJSON = require('./public/data/diachro.json');
+	clustersSrc={};
+	clustersTarget={};
+	for (i in parsedJSON) {
+		cluster=parsedJSON[i];
+		src=cluster.ClusterSource;
+		target=cluster.ClusterTarget;
+		if (typeof(clustersSrc[src]) == "undefined") {
+			clustersSrc[src] = new model.Cluster(src);
+		}
+		if (typeof(clustersTarget[target]) == "undefined") {
+			clustersTarget[target] = new model.Cluster(target);
+		}
+		clustersSrc[src].addTarget(clustersTarget[target]);
+	}
+	bipartite.chart(clustersSrc,clustersTarget, 800, 400,50,20, res);
 })
 
 //---------------------DEFAULT---------------------------------------------------
