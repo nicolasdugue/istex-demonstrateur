@@ -164,7 +164,7 @@ app
 		   ]
 		  }
 		  ;
-	embeddedCircle.chart([kernel,source,target], 350,res);
+	embeddedCircle.chart([kernel,source,target], 300,res);
 
 })
 
@@ -173,7 +173,7 @@ app
 //---------------------/timeline---------------------------------------------------
 .get('/timeline', function(req,res){
 	data_timeline=[{"frequency" : [["P1",250],["P2",300],["P3",400]], "total": 950, "name": "Caregiver"},{"frequency" : [["P1",125],["P2",100],["P3",25]], "total": 250, "name": "Nurse"},{"frequency" : [["P1",175],["P2",135],["P3",125]], "total": 435, "name": "Brain"},{"frequency" : [["P1",125],["P2",175],["P3",25]], "total": 250, "name": "Liver"},{"frequency" : [["P1",125],["P2",175],["P3",225]], "total": 250, "name": "Blood"},{"frequency" : [["P1",125],["P2",175],["P3",325]], "total": 250, "name": "Cancer"}];
-	timeline.chart(data_timeline, 900, 600, 2005, 2013, 30,res);
+	timeline.chart(data_timeline, 1000, 600, 2005, 2013, 30,res);
 })
 
 //---------------------/barchart---------------------------------------------------
