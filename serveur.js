@@ -20,6 +20,8 @@ dataviz='<div id="dataviz-container"></div>';
 
 
 var resultats=Object();
+to_render='generic_ejs.ejs'
+page="accueil";
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/scripts'));
@@ -36,11 +38,11 @@ app
 //---------------------/todo---------------------------------------------------
 //---------------------/todo---------------------------------------------------
 .get('/todo', function(req,res) {
-	logger.debug("/todo");
-	database.find("todolist").toArray(function(err, items) {
+	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	/*database.find("todolist").toArray(function(err, items) {
 			resultats.mongodb=items;
 			res.render('todo.ejs', {objectResult: resultats, "todo" : req.body.newtodo,  layout: 'layout' });
-		});	
+		});	*/
 })
 //---------------------/todoajouter---------------------------------------------------
 //---------------------/todoajouter---------------------------------------------------
@@ -68,36 +70,6 @@ app
 		resultats.mongodb=items;
 		res.render('words.ejs', {objectResult: resultats});
 	});	
-})
-
-//---------------------/simple-circle---------------------------------------------------
-//---------------------/simple-circle---------------------------------------------------
-//---------------------/simple-circle---------------------------------------------------
-.get('/simple-circle', function(req,res){
-	jsdom.env(
-		dataviz,
-		function(errors, window) {
-		// this callback function pre-renders the dataviz inside the html document, then export result into a static file
-
-			var el = window.document.querySelector('#dataviz-container')
-				, circleId = 'a2324';  // say, this value was dynamically retrieved from some database
-
-			// generate the dataviz
-			d3.select(el)
-				.append('svg:svg')
-					.attr('width', 600)
-					.attr('height', 300)
-					.append('circle')
-						.attr('cx', 300)
-						.attr('cy', 150)
-						.attr('r', 30)
-						.attr('fill', '#26963c')
-						.attr('id', circleId); // say, this value was dynamically retrieved from some database
-			// save result in an html file, we could also keep it in memory, or export the interesting fragment into a database for later use
-			var svgsrc = window.document.querySelector('#dataviz-container').innerHTML;
-			res.render('circle.ejs', {objectResult: svgsrc});
-		}
-	);
 })
 
 //---------------------/marimekko---------------------------------------------------

@@ -1,0 +1,111 @@
+<html>
+	<head>
+	<title>Diachronic' Explorer</title>
+
+	<% include header.ejs %>
+
+	<!-- Bipartite graph for diachrony !-->
+	<style>
+			.SrcList {
+			  fill: rgb(31, 119, 180);
+			  fill-opacity: .10;
+			  stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			}
+
+			.TargetList {
+			   fill: #ff7f0e;
+			  fill-opacity: 0.2;
+			  stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			}
+
+			.ClusterSource {
+				 stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			  fill: rgb(31, 119, 180);
+			  fill-opacity: .25;
+			}
+
+			.ClusterTarget {
+				 stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			  fill: #ff7f0e;
+			  fill-opacity: 0.8;
+			}
+
+			text {
+			  font: 10px sans-serif;
+			}
+		</style>
+	<!-- Embedded circles for cluster matchings !-->
+	<style>
+			/* Colore aussi les cercles de la timeline donc utiliser les noms des classes plutot !
+			*/
+			circle {
+			  fill: rgb(31, 119, 180);
+			  fill-opacity: .25;
+			  stroke: rgb(31, 119, 180);
+			  stroke-width: 1px;
+			}
+
+			.leaf circle {
+			  fill: #ff7f0e;
+			  fill-opacity: 1;
+			}
+			/* Trop gros pour Marimekko donc utiliser le nom des classes plutot !
+			*/
+			text {
+			  font: 32px sans-serif;
+			}
+		</style>
+	
+	</head>
+
+<body>
+	<div id="wrapper">
+		<% include navbar.ejs %>
+		<div id="page-wrapper">
+			<% 
+			if (page == "accueil") {
+			%>
+			<% include accueil.ejs %>
+			<%
+			} 
+			else if (page=="embeddedCircle") {
+			%>
+			<% include embeddedCircle.ejs %>
+			<%
+			} 
+			else if (page=="marimekko") {
+			%>
+			<% include marimekko.ejs %>
+			<%
+			} 
+			else if (page=="timeline") {
+			%>
+			<% include timeline.ejs %>
+			<%
+			} 
+			else if (page=="bipartite") {
+			%>
+			<% include bipartite.ejs %>
+			<%
+			}
+		else if (page=="barchart") {
+			%>
+			<% include barchart.ejs %>
+			<%
+			}
+			else {
+			%>
+			<% include accueil.ejs %>
+			<%
+			}
+				
+			%>
+		</div>
+	</div>
+	<% include footer.ejs %>
+</body>
+</html>
