@@ -134,6 +134,28 @@ app
 		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 	}
 })
+.post('/uploadJson', function(req, res) {
+	name=req.files.jsond.name;
+	page="upload";
+	if (name.indexOf(".json") > -1) {
+		logger.debug(req.files.jsond.name);
+		logger.debug(req.files.jsond.path);
+		fs.readFile(req.files.jsond.path, function (err,data) {
+			if (err) {
+				logger.debug(err);
+				resultats.upload="Upload de "+req.files.jsond.name+" failed : "+err;
+				res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+			}
+			database.insert("diachrony", {'srcPeriod' : req.body.periodNumberSrc, 'targetPeriod' : req.body.periodNumberTarget, 'json' : JSON.parse(data.toString())});
+		});
+		resultats.upload="Upload de "+req.files.jsond.name+" réussi.";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+	else {
+		resultats.upload="Upload de "+req.files.jsond.name+" : échec. Le fichier n'a pas l'extension sclu !";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+})
 //---------------------/todoajouter---------------------------------------------------
 //---------------------/todoajouter---------------------------------------------------
 //---------------------/todoajouter---------------------------------------------------

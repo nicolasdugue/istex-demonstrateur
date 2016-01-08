@@ -125,7 +125,30 @@
                             </div>
                         </div>
                         	<center>
-                        		<%- objectResult %>
+                        		<form action="uploadJson"
+                                    enctype="multipart/form-data" method="post">
+                                    <p>
+                                     <label for="periodNumberSrc">Choose the source period considered:</label>
+                                    <SELECT name="periodNumberSrc" size="1">
+                        				<% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+											<OPTION> <%= i%>
+                        				<% }%>
+									</SELECT>
+                                    </p>
+                                    <p>
+                                     <label for="periodNumberTarget">Choose the target period considered:</label>
+                                    <SELECT name="periodNumberTarget" size="1">
+                        				<% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+											<OPTION> <%= i%>
+                        				<% }%>
+									</SELECT>
+                                    </p>
+                                    <p>
+                                    <label for="jsond">Choose the json file:</label>
+                                    <input type="file" name="jsond">
+                                    </p>
+                                    <input type="submit" value="Upload">
+                                </form>
                         	</center>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
