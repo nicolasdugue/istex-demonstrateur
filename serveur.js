@@ -1,16 +1,23 @@
 var logger=require('logger');
 var express=require('express');
+
 var app =express();
 
 var database = require('db');
 database.populate();
 
+//To read files
+var     lazy    = require("lazy"),
+        fs  = require("fs");
+
+//Istex coded modules to draw charts
 var barchart = require('barchart');
 var marimekko=require('marimekko');
 var embeddedCircle=require('embeddedCircle');
 var timeline=require('timeline');
 var bipartite=require('bipartite');
 
+//Model used for bipartite graph
 var model=require("clusters");
 
 var d3 = require('d3'), 
@@ -34,15 +41,98 @@ app
 	next();
 })
 
+.get('/upload', function(req,res) {
+	page="upload";
+	database.find("experiment").toArray(function(err, items) {
+		if (items.length > 0)
+			resultats.experiment=items[items.length - 1].periodNumber;
+		else 
+			resultats.experiment=2;
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	});
+})
+
 //---------------------/todo---------------------------------------------------
 //---------------------/todo---------------------------------------------------
 //---------------------/todo---------------------------------------------------
 .get('/todo', function(req,res) {
+	page="accueil";
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 	/*database.find("todolist").toArray(function(err, items) {
 			resultats.mongodb=items;
 			res.render('todo.ejs', {objectResult: resultats, "todo" : req.body.newtodo,  layout: 'layout' });
 		});	*/
+})
+.post('/periodNumber', function(req, res) {
+	if (req.body.periodNumber != '') {
+		database.insert("experiment", {'periodNumber' : req.body.periodNumber});
+	}
+	res.redirect('/upload');
+})
+.post('/uploadSclu', function(req, res) {
+	name=req.files.sclu.name;
+	page="upload";
+	if (name.indexOf(".sclu") > -1) {
+		logger.debug(req.files.sclu.name);
+		logger.debug(req.files.sclu.path);
+		logger.debug(req.files.sclu.type);
+		logger.debug(req.files.sclu.size);
+		new lazy(fs.createReadStream(req.files.sclu.path))
+		.lines
+		.forEach(function(line){
+			line=line.toString();
+		    if (line.indexOf("Cl") == -1) {
+		    	tab=line.split("\t");
+		    	cl=tab[0];
+		    	featuresNb=tab[2];
+		    	docNb=tab[7];
+		    	database.insert("clusterDesc", {'cluster' : cl, 'period' : req.body.periodNumber, 'FeaturesNumber' : featuresNb, 'DocumentNumber' : docNb});
+		    }
+		}
+		);
+		resultats.upload="Upload de "+req.files.sclu.name+" réussi.";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+	else {
+		resultats.upload="Upload de "+req.files.sclu.name+" : échec. Le fichier n'a pas l'extension sclu !";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+})
+.post('/uploadDcsl', function(req, res) {
+	name=req.files.dcsl.name;
+	page="upload";
+	if (name.indexOf(".dcsl") > -1) {
+		logger.debug(req.files.dcsl.name);
+		logger.debug(req.files.dcsl.path);
+		clusterId=0;
+		new lazy(fs.createReadStream(req.files.dcsl.path))
+		.lines
+		.forEach(function(line){
+			if (line === undefined) {
+			}
+			else {
+				line=line.toString();
+			    if (line.indexOf("Cl") != -1) {
+			    	clusterId=line.split(" ")[1];
+			    }
+			    else {
+			    	tab=line.split(" ");
+			    	if (tab.length == 2) {
+				    	featureWeight=tab[0];
+				    	featureName=tab[1];
+				    	database.insert("clusterFeatures", {'cluster' : clusterId, 'period' : req.body.periodNumber, 'FeatureWeight' : featureWeight, 'FeatureName' : featureName});
+			    	}
+			    }
+			}
+		}
+		);
+		resultats.upload="Upload de "+req.files.dcsl.name+" réussi.";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+	else {
+		resultats.upload="Upload de "+req.files.dcsl.name+" : échec. Le fichier n'a pas l'extension sclu !";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
 })
 //---------------------/todoajouter---------------------------------------------------
 //---------------------/todoajouter---------------------------------------------------
