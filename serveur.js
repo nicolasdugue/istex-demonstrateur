@@ -305,9 +305,11 @@ app
 			}
 			clustersSrc[src].addTarget(clustersTarget[target]);
 			clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
+			list=[];
 			for (f in kernels) {
-				clustersSrc[src].addKernel(kernels[f], clustersTarget[target]);
+				list.push(kernels[f]);
 			}
+			clustersSrc[src].addKernel(list, clustersTarget[target]);
 		}
 	}
 	bipartite.chart(clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);

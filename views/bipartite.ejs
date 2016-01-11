@@ -99,8 +99,16 @@
 				opacityHigh(line);
 				text=d3.select("#"+line.attr("src")+line.attr("target"));
 				opacityHigh(text);
-				console.log(line.attr("kernel"));
-				matching.innerHTML =  JSON.stringify(line.attr("kernel"));
+				obj=JSON.parse(line.attr("kernel"));
+				content="";
+				for (feature in obj) {
+					label=obj[feature]["label"];
+					srcW=obj[feature]["fSource"];
+					targetW=obj[feature]["Target"];
+					content =content +"Label <b>"+label+"</b> is common to <span class='blueOfSrcList'>" + line.attr("src")+ "(" +srcW+")</span> and <span class='orangeOfTargetList'>"+ line.attr("target") +" ("+targetW+")</span><br />";
+				}
+				matching.innerHTML =content;
+				
 			};
 			function mouseoutLine() {
 				var line = d3.select(this);
