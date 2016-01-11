@@ -134,28 +134,7 @@ app
 		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 	}
 })
-.post('/uploadJson', function(req, res) {
-	name=req.files.jsond.name;
-	page="upload";
-	if (name.indexOf(".json") > -1) {
-		logger.debug(req.files.jsond.name);
-		logger.debug(req.files.jsond.path);
-		fs.readFile(req.files.jsond.path, function (err,data) {
-			if (err) {
-				logger.debug(err);
-				resultats.upload="Upload de "+req.files.jsond.name+" failed : "+err;
-				res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-			}
-			database.insert("diachrony", {'srcPeriod' : req.body.periodNumberSrc, 'targetPeriod' : req.body.periodNumberTarget, 'json' : JSON.parse(data.toString())});
-		});
-		resultats.upload="Upload de "+req.files.jsond.name+" réussi.";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-	}
-	else {
-		resultats.upload="Upload de "+req.files.jsond.name+" : échec. Le fichier n'a pas l'extension sclu !";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-	}
-})
+
 //---------------------/todoajouter---------------------------------------------------
 //---------------------/todoajouter---------------------------------------------------
 //---------------------/todoajouter---------------------------------------------------
@@ -211,6 +190,10 @@ app
 //---------------------/circles---------------------------------------------------
 //---------------------/circles---------------------------------------------------
 .get('/circles', function(req,res){
+	logger.debug(req.query);
+	if (req.query.src !== undefined && req.query.target !== undefined) {
+		//Récupérer la diachronie et formater comme ci-dessous.
+	}
 	kernel=
 		{
 		   "name": "Kernel",
@@ -271,48 +254,79 @@ app
 //---------------------/diachro---------------------------------------------------
 //---------------------/diachro---------------------------------------------------
 //---------------------/diachro---------------------------------------------------
+.post('/uploadJson', function(req, res) {
+	name=req.files.jsond.name;
+	page="upload";
+	if (name.indexOf(".json") > -1) {
+		logger.debug(req.files.jsond.name);
+		logger.debug(req.files.jsond.path);
+		fs.readFile(req.files.jsond.path, function (err,data) {
+			if (err) {
+				logger.debug(err);
+				resultats.upload="Upload de "+req.files.jsond.name+" failed : "+err;
+				res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+			}
+			database.insert("diachrony", {'srcPeriod' : req.body.periodNumberSrc, 'targetPeriod' : req.body.periodNumberTarget, 'json' : JSON.parse(data.toString())});
+		});
+		resultats.upload="Upload de "+req.files.jsond.name+" réussi.";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+	else {
+		resultats.upload="Upload de "+req.files.jsond.name+" : échec. Le fichier n'a pas l'extension sclu !";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+})
+
 .get('/diachronie', function(req,res){
-	var parsedJSON = require('./public/data/diachro.json');
-	clustersSrc={};
-	clustersTarget={};
-	clustersVanished=[];
-	clustersAppeared=[];
-	for (i in parsedJSON) {
-		cluster=parsedJSON[i];
-		if ("state" in cluster) {
-			if (cluster.state =="appeared") {
-				target=cluster["Cluster target"];
-				appeared=new model.Cluster(target);
-				appeared.addStateAppeared();
-				clustersAppeared.push(appeared);
-			}
-			else {
-				src=cluster["Cluster source"];
-				vanished=new model.Cluster(src);
-				vanished.addStateVanished();
-				clustersVanished.push(vanished);
-			}
+	database.find("diachrony").toArray(function(err, items) {
+		logger.debug("Items returned from database for diachrony");
+		if (items === undefined) {
 		}
 		else {
-			src=cluster["Cluster Source"];
-			target=cluster["Cluster Target"];
-			kernels=cluster["Kernel Labels"];
-			if (typeof(clustersSrc[src]) == "undefined") {
-				clustersSrc[src] = new model.Cluster(src);
+			var parsedJSON=items[0].json;
+			logger.debug(parsedJSON);
+			clustersSrc={};
+			clustersTarget={};
+			clustersVanished=[];
+			clustersAppeared=[];
+			for (i in parsedJSON) {
+				cluster=parsedJSON[i];
+				if ("state" in cluster) {
+					if (cluster.state =="appeared") {
+						target=cluster["Cluster target"];
+						appeared=new model.Cluster(target);
+						appeared.addStateAppeared();
+						clustersAppeared.push(appeared);
+					}
+					else {
+						src=cluster["Cluster source"];
+						vanished=new model.Cluster(src);
+						vanished.addStateVanished();
+						clustersVanished.push(vanished);
+					}
+				}
+				else {
+					src=cluster["Cluster Source"];
+					target=cluster["Cluster Target"];
+					kernels=cluster["Kernel Labels"];
+					if (typeof(clustersSrc[src]) == "undefined") {
+						clustersSrc[src] = new model.Cluster(src);
+					}
+					if (typeof(clustersTarget[target]) == "undefined") {
+						clustersTarget[target] = new model.Cluster(target);
+					}
+					clustersSrc[src].addTarget(clustersTarget[target]);
+					clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
+					list=[];
+					for (f in kernels) {
+						list.push(kernels[f]);
+					}
+					clustersSrc[src].addKernel(list, clustersTarget[target]);
+				}
 			}
-			if (typeof(clustersTarget[target]) == "undefined") {
-				clustersTarget[target] = new model.Cluster(target);
-			}
-			clustersSrc[src].addTarget(clustersTarget[target]);
-			clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
-			list=[];
-			for (f in kernels) {
-				list.push(kernels[f]);
-			}
-			clustersSrc[src].addKernel(list, clustersTarget[target]);
+			bipartite.chart(clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
 		}
-	}
-	bipartite.chart(clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
+	});	
 })
 
 //---------------------DEFAULT---------------------------------------------------
