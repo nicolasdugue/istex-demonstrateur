@@ -275,20 +275,42 @@ app
 	var parsedJSON = require('./public/data/diachro.json');
 	clustersSrc={};
 	clustersTarget={};
+	clustersVanished=[];
+	clustersAppeared=[];
 	for (i in parsedJSON) {
 		cluster=parsedJSON[i];
-		src=cluster.ClusterSource;
-		target=cluster.ClusterTarget;
-		if (typeof(clustersSrc[src]) == "undefined") {
-			clustersSrc[src] = new model.Cluster(src);
+		if ("state" in cluster) {
+			if (cluster.state =="appeared") {
+				target=cluster["Cluster target"];
+				appeared=new model.Cluster(target);
+				appeared.addStateAppeared();
+				clustersAppeared.push(appeared);
+			}
+			else {
+				src=cluster["Cluster source"];
+				vanished=new model.Cluster(src);
+				vanished.addStateVanished();
+				clustersVanished.push(vanished);
+			}
 		}
-		if (typeof(clustersTarget[target]) == "undefined") {
-			clustersTarget[target] = new model.Cluster(target);
+		else {
+			src=cluster["Cluster Source"];
+			target=cluster["Cluster Target"];
+			kernels=cluster["Kernel Labels"];
+			if (typeof(clustersSrc[src]) == "undefined") {
+				clustersSrc[src] = new model.Cluster(src);
+			}
+			if (typeof(clustersTarget[target]) == "undefined") {
+				clustersTarget[target] = new model.Cluster(target);
+			}
+			clustersSrc[src].addTarget(clustersTarget[target]);
+			clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
+			for (f in kernels) {
+				clustersSrc[src].addKernel(kernels[f], clustersTarget[target]);
+			}
 		}
-		clustersSrc[src].addTarget(clustersTarget[target]);
-		clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
 	}
-	bipartite.chart(clustersSrc,clustersTarget, 1200, 400,50,20, res);
+	bipartite.chart(clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
 })
 
 //---------------------DEFAULT---------------------------------------------------
