@@ -191,47 +191,42 @@ app
 //---------------------/circles---------------------------------------------------
 .get('/circles', function(req,res){
 	logger.debug(req.query);
-	if (req.query.src !== undefined && req.query.target !== undefined) {
-		//Récupérer la diachronie et formater comme ci-dessous.
-	}
-	kernel=
-		{
-		   "name": "Kernel",
-		   "children": [
-		    {"name": "Liver", "size": 17010},
-		    {"name": "Brain", "size": 5842},
-		    {"name": "ADN", "size": 1041},
-		    {"name": "Sequence", "size": 5176},
-		    {"name": "Blood", "size": 449},
-		    {"name": "Heart", "size": 5593},
-		    {"name": "Pump", "size": 5534},
-		    {"name": "Neurology", "size": 9201},
-		    {"name": "Surgery", "size": 19975},
-		   ]
-		  }
-		;
-	source={
-		   "name": "Prevalent in source",
-		   "children": [
-		    {"name": "Caregivers", "size": 1759},
-		    {"name": "Nurse", "size": 2165},
-		    {"name": "Hospital", "size": 586},
-		    {"name": "Familly", "size": 3331},
-		    {"name": "Senescence", "size": 772},
-		    {"name": "Woman", "size": 3322}
-		   ]
-		  };
-	target={
-		   "name": "Prevalent in target",
-		   "children": [
-		    {"name": "Mices", "size": 8833},
-		    {"name": "Rats", "size": 1732},
-		    {"name": "Meds", "size": 3623},
-		    {"name": "Cell", "size": 10066}
-		   ]
-		  }
-		  ;
-	embeddedCircle.chart([kernel,source,target], 300,res);
+	database.find("diachrony").toArray(function(err, items) {
+		logger.debug("Items returned from database for diachrony");
+		if (items === undefined) {
+		}
+		else {
+			var parsedJSON=items[0].json;
+			logger.debug(parsedJSON);
+			kernel={};
+			for (i in parsedJSON) {
+				cluster=parsedJSON[i];
+				if (!("state" in cluster)) {
+					src=cluster["Cluster Source"];
+					target=cluster["Cluster Target"];
+					kernels=cluster["Kernel Labels"];
+					kernel={};
+					kernel.label="kernel";
+					kernel.children=kernels;
+					sources=cluster["Common Labels prevalent in Source"];
+					source={};
+					source.label="Prevalent in Source";
+					source.children=sources;
+					targets=cluster["Common Labels prevalent in Target"];
+					target={};
+					target.label="Prevalent in Target";
+					target.children=targets;
+					logger.debug(source);
+
+					if (req.query.src === undefined && req.query.target === undefined) {
+						embeddedCircle.chart([kernel,source,target], 300,res);
+						break;
+					}
+				}
+			}
+			
+		}
+	});
 
 })
 
