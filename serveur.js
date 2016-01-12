@@ -167,6 +167,26 @@ app
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
 .get('/marimekko', function(req,res){
+	database.find("clusterFeatures").toArray(function(err, items) {
+		logger.debug("Items returned from database for marimekko");
+		if (items === undefined) {
+		}
+		else {
+			var period;
+			var data_marimekko=[];
+			if (req.query.period === undefined) {
+				period=items[0].period;
+			}
+			else {
+				period=req.query.period;
+			}
+			for (i in items) {
+				if (items[i].period == period)
+					data_marimekko.push(items[i]);
+			}
+			marimekko.chart(data_marimekko, 1250,2000,30,res);
+		}
+	});
 	data_marimekko=[{"feature": "Caregivers", "cluster": "Cluster1", "value": 7.9},
 		{"feature": "Mice", "cluster": "Cluster2", "value": 3.2},
 		{"feature": "Brain", "cluster": "Cluster1", "value": 6.5},
@@ -182,7 +202,7 @@ app
 		{"feature": "Hospital", "cluster": "Cluster3", "value": 4.72},
 		{"feature": "Life", "cluster": "Cluster4", "value": 6.28}
 		];
-	marimekko.chart(data_marimekko, 1000,500,30,res);
+	
 
 })
 
