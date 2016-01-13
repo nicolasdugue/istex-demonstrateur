@@ -4,7 +4,6 @@
 	                <h1 class="page-header">Words frequency</h1>
 	            </div>
 	        </div>
-	        <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i>Corpus words frequency
@@ -29,7 +28,7 @@
                             </div>
                         </div>
                         	<center>
-                        		<%- objectResult %>
+                        		<%- objectResult.svgsrc %>
                         	</center>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -37,8 +36,6 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
-                 </div>
-            <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i>First period words frequency
@@ -63,16 +60,13 @@
                             </div>
                         </div>
                         	<center>
-                        		<%- objectResult %>
+                        		<%- objectResult.svgsrc %>
                         	</center>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div id="morris-area-chart"></div>
                         </div>
                         <!-- /.panel-body -->
-                    </div>
-                 </div>
-            <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i>Second period words frequency
@@ -97,7 +91,7 @@
                             </div>
                         </div>
                         	<center>
-                        		<%- objectResult %>
+                        		<%- objectResult.svgsrc %>
                         	</center>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -105,4 +99,3 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
-                 </div>

@@ -41,15 +41,20 @@ app
 	next();
 })
 
-.get('/upload', function(req,res) {
-	page="upload";
+.use(function(req,res,next) {
 	database.find("experiment").toArray(function(err, items) {
 		if (items.length > 0)
 			resultats.experiment=items[items.length - 1].periodNumber;
 		else 
 			resultats.experiment=2;
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		
 	});
+	next();
+})
+
+.get('/upload', function(req,res) {
+	page="upload";
+	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 })
 
 //---------------------/todo---------------------------------------------------
@@ -163,6 +168,47 @@ app
 	});	
 })
 
+//---------------------/clusterbarchart---------------------------------------------------
+//---------------------/clusterbarchart---------------------------------------------------
+//---------------------/clusterbarchart---------------------------------------------------
+.get('/clusterbarchart', function(req,res){
+	resultats.page='clusterbarchart';
+	if (req.query.period === undefined) {
+		resultats.period="1";
+	}
+	else {
+		resultats.period=req.query.period;
+	}
+	if (req.query.cluster !== undefined) {
+		resultats.cluster=req.query.cluster;
+	}
+	resultats.clusters={};
+	var data_cluster=[];
+	database.find("clusterFeatures").toArray(function(err, items) {
+		logger.debug("Items returned from database for chart");
+		if (items !== undefined) {
+			for (i in items) {
+				if (items[i].period == resultats.period) {
+					if (!(items[i].cluster in resultats.clusters)) {
+						resultats.clusters[items[i].cluster]=true;
+					}
+					if (!("cluster" in resultats)) {
+						resultats.cluster=items[i].cluster;
+					}
+					if (items[i].cluster == resultats.cluster) {
+						items[i].object=items[i].FeatureName;
+						items[i].frequency=Math.round(parseFloat(items[i].FeatureWeight))*10;
+						data_cluster.push(items[i]);
+					}
+				}
+			}
+		}
+		barchart.chart(resultats,data_cluster,700,200,50,20,res);
+	});
+	
+})
+
+
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
@@ -184,25 +230,9 @@ app
 				if (items[i].period == period)
 					data_marimekko.push(items[i]);
 			}
-			marimekko.chart(data_marimekko, 1250,2000,30,res);
+			marimekko.chart(resultats, data_marimekko, 800,1000,30,res);
 		}
-	});
-	data_marimekko=[{"feature": "Caregivers", "cluster": "Cluster1", "value": 7.9},
-		{"feature": "Mice", "cluster": "Cluster2", "value": 3.2},
-		{"feature": "Brain", "cluster": "Cluster1", "value": 6.5},
-		{"feature": "Rat", "cluster": "Cluster2", "value": 8},
-		{"feature": "Brain", "cluster": "Cluster3", "value": 1.8},
-		{"feature": "Blood", "cluster": "Cluster4", "value": 2.6},
-		{"feature": "Liver", "cluster": "Cluster1", "value":4.35},
-		{"feature": "Cancer", "cluster": "Cluster2", "value": 6.9},
-		{"feature": "Nurse", "cluster": "Cluster3", "value": 6.1},
-		{"feature": "Depression", "cluster": "Cluster4", "value": 3.152},
-		{"feature": "Neuroscience", "cluster": "Cluster1", "value": 2.8},
-		{"feature": "Surgery", "cluster": "Cluster2", "value": 5.72},
-		{"feature": "Hospital", "cluster": "Cluster3", "value": 4.72},
-		{"feature": "Life", "cluster": "Cluster4", "value": 6.28}
-		];
-	
+	});	
 
 })
 
@@ -210,38 +240,52 @@ app
 //---------------------/circles---------------------------------------------------
 //---------------------/circles---------------------------------------------------
 .get('/circles', function(req,res){
-	logger.debug(req.query);
 	database.find("diachrony").toArray(function(err, items) {
 		logger.debug("Items returned from database for diachrony");
+		if (req.query.psrc === undefined || req.query.ptgt === undefined) {
+			resultats.psrc="1";
+			resultats.ptgt="2";
+		}
+		else {
+			resultats.psrc=req.query.psrc;
+			resultats.ptgt=req.query.ptgt;
+		}
 		if (items === undefined) {
 		}
 		else {
-			var parsedJSON=items[0].json;
-			logger.debug(parsedJSON);
-			kernel={};
-			for (i in parsedJSON) {
-				cluster=parsedJSON[i];
-				if (!("state" in cluster)) {
-					src=cluster["Cluster Source"];
-					target=cluster["Cluster Target"];
-					kernels=cluster["Kernel Labels"];
+			for (it in items) {
+				
+				if (resultats.psrc == items[it].srcPeriod &&  resultats.ptgt == items[it].targetPeriod) {
+					var parsedJSON=items[it].json;
 					kernel={};
-					kernel.label="kernel";
-					kernel.children=kernels;
-					sources=cluster["Common Labels prevalent in Source"];
 					source={};
-					source.label="Prevalent in Source";
-					source.children=sources;
-					targets=cluster["Common Labels prevalent in Target"];
 					target={};
-					target.label="Prevalent in Target";
-					target.children=targets;
-					logger.debug(source);
-
-					if (req.query.src === undefined && req.query.target === undefined) {
-						embeddedCircle.chart([kernel,source,target], 300,res);
-						break;
+					resultats.matching=[];
+					for (i in parsedJSON) {
+						cluster=parsedJSON[i];
+						if (!("state" in cluster)) {
+							src=cluster["Cluster Source"];
+							tgt=cluster["Cluster Target"];
+							obj = Object();
+							obj.src=src;
+							obj.tgt=tgt;
+							resultats.matching.push(obj);
+							if ((req.query.src === undefined) || (req.query.tgt === undefined) || (req.query.src == src && req.query.tgt == tgt)) {
+								resultats.src=src;
+								resultats.tgt=tgt;
+								kernels=cluster["Kernel Labels"];
+								kernel.label="kernel";
+								kernel.children=kernels;
+								sources=cluster["Common Labels prevalent in Source"];
+								source.label="Prevalent in Source";
+								source.children=sources;
+								targets=cluster["Common Labels prevalent in Target"];
+								target.label="Prevalent in Target";
+								target.children=targets;
+							}
+						}
 					}
+					embeddedCircle.chart(resultats,[kernel,source,target], 300,res);
 				}
 			}
 			
@@ -263,7 +307,7 @@ app
 //---------------------/barchart---------------------------------------------------
 .get('/barchart', function(req,res){
 	var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
-	barchart.chart(dataset,700,200,50,20,res);
+	barchart.chart(resultats, dataset,1200,200,50,20,res);
 })
 
 //---------------------/diachro---------------------------------------------------
@@ -298,48 +342,54 @@ app
 		if (items === undefined) {
 		}
 		else {
-			var parsedJSON=items[0].json;
-			logger.debug(parsedJSON);
-			clustersSrc={};
-			clustersTarget={};
-			clustersVanished=[];
-			clustersAppeared=[];
-			for (i in parsedJSON) {
-				cluster=parsedJSON[i];
-				if ("state" in cluster) {
-					if (cluster.state =="appeared") {
-						target=cluster["Cluster target"];
-						appeared=new model.Cluster(target);
-						appeared.addStateAppeared();
-						clustersAppeared.push(appeared);
+			for (i in items) {
+				if (req.query.src === undefined || req.query.tgt === undefined || (req.query.src == items[i].srcPeriod &&  req.query.tgt == items[i].targetPeriod)) {
+					resultats.psrc=items[i].srcPeriod;
+					resultats.ptgt=items[i].targetPeriod;
+					var parsedJSON=items[i].json;
+					clustersSrc={};
+					clustersTarget={};
+					clustersVanished=[];
+					clustersAppeared=[];
+					for (i in parsedJSON) {
+						cluster=parsedJSON[i];
+						if ("state" in cluster) {
+							if (cluster.state =="appeared") {
+								target=cluster["Cluster target"];
+								appeared=new model.Cluster(target);
+								appeared.addStateAppeared();
+								clustersAppeared.push(appeared);
+							}
+							else {
+								src=cluster["Cluster source"];
+								vanished=new model.Cluster(src);
+								vanished.addStateVanished();
+								clustersVanished.push(vanished);
+							}
+						}
+						else {
+							src=cluster["Cluster Source"];
+							target=cluster["Cluster Target"];
+							kernels=cluster["Kernel Labels"];
+							if (typeof(clustersSrc[src]) == "undefined") {
+								clustersSrc[src] = new model.Cluster(src);
+							}
+							if (typeof(clustersTarget[target]) == "undefined") {
+								clustersTarget[target] = new model.Cluster(target);
+							}
+							clustersSrc[src].addTarget(clustersTarget[target]);
+							clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
+							list=[];
+							for (f in kernels) {
+								list.push(kernels[f]);
+							}
+							clustersSrc[src].addKernel(list, clustersTarget[target]);
+						}
 					}
-					else {
-						src=cluster["Cluster source"];
-						vanished=new model.Cluster(src);
-						vanished.addStateVanished();
-						clustersVanished.push(vanished);
-					}
-				}
-				else {
-					src=cluster["Cluster Source"];
-					target=cluster["Cluster Target"];
-					kernels=cluster["Kernel Labels"];
-					if (typeof(clustersSrc[src]) == "undefined") {
-						clustersSrc[src] = new model.Cluster(src);
-					}
-					if (typeof(clustersTarget[target]) == "undefined") {
-						clustersTarget[target] = new model.Cluster(target);
-					}
-					clustersSrc[src].addTarget(clustersTarget[target]);
-					clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
-					list=[];
-					for (f in kernels) {
-						list.push(kernels[f]);
-					}
-					clustersSrc[src].addKernel(list, clustersTarget[target]);
+					bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
+					break;
 				}
 			}
-			bipartite.chart(clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
 		}
 	});	
 })

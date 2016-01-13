@@ -9,27 +9,28 @@
 	                    <div class="panel panel-default">
 	                        <div class="panel-heading">
 	                            <i class="fa fa-bar-chart-o fa-fw"></i> Bipartite diachronic graph
+	                            <% if (("psrc" in objectResult) && ("ptgt" in objectResult)) { %>
+	                            	: Periods <%= objectResult.psrc %> and <%= objectResult.ptgt %>
+	                            <% } %> 
+
+
 	                            <div class="pull-right">
 	                                <div class="btn-group">
 	                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-	                                        Actions
+	                                        Select periods
 	                                        <span class="caret"></span>
 	                                    </button>
 	                                    <ul class="dropdown-menu pull-right" role="menu">
-	                                        <li><a href="#">Action</a>
-	                                        </li>
-	                                        <li><a href="#">Another action</a>
-	                                        </li>
-	                                        <li><a href="#">Something else here</a>
-	                                        </li>
-	                                        <li class="divider"></li>
-	                                        <li><a href="#">Separated link</a>
-	                                        </li>
+	                                        <% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+	                                        	<% for (var j=i+1; j <= objectResult.experiment; j++ ) {%>
+                                            		<li><a href="/diachronie?src=<%= i%>&tgt=<%= j%>">Periods <%= i%>-<%= j%></a></li>
+                                            	<% }%>
+                                        	<% }%>
 	                                    </ul>
 	                                </div>
 	                            </div>
 	                        </div>
-	                        		<%- objectResult %>
+	                        		<%- objectResult.svgsrc %>
 	                        <!-- /.panel-heading -->
 	                        <div class="panel-body">
 	                            <div id="morris-area-chart"></div>
@@ -41,22 +42,17 @@
                 	<div class="panel panel-red">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-support fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">Class information</div>
-                                    <div>Selected Cluster Keywords</div>
+                                <div class="col-xs-3"><i class="fa fa-shopping-cart fa-5x">Cluster data</i>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        	<a href='#'>
                             <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
+                                <span class="pull-left">Selected Cluster Keywords</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                 <div class="clearfix"></div>
                             </div>
-                        </a>
+                            </a>
                     </div>
                	</div>
             </div>
@@ -66,7 +62,7 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-shopping-cart fa-5x"></i>
+                                <i class="fa fa-shopping-cart fa-5x">Matching information</i>
                             </div>
                             <div class="col-xs-9 text-right">
                             </div>
@@ -75,7 +71,7 @@
                     <p id='matchingp'> </p>
                     <a href="#">
                         <div class="panel-footer">
-                            <span class="pull-left">Matching information</span>
+                            <span class="pull-left">Selected link information</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                             <div class="clearfix"></div>
                         </div>
@@ -104,8 +100,8 @@
 				for (feature in obj) {
 					label=obj[feature]["label"];
 					srcW=obj[feature]["fSource"];
-					targetW=obj[feature]["Target"];
-					content =content +"Label <b>"+label+"</b> is common to <span class='blueOfSrcList'>" + line.attr("src")+ "(" +srcW+")</span> and <span class='orangeOfTargetList'>"+ line.attr("target") +" ("+targetW+")</span><br />";
+					targetW=obj[feature]["fTarget"];
+					content =content +"Label <b>"+label+"</b> is common to <span class='blueOfSrcList'>" + line.attr("src")+ " (" +srcW+")</span> and <span class='orangeOfTargetList'>"+ line.attr("target") +" ("+targetW+")</span><br />";
 				}
 				matching.innerHTML =content;
 				

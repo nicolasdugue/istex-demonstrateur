@@ -1,0 +1,13 @@
+								<div class="pull-right">
+	                                <div class="btn-group">
+	                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+	                                        Select period
+	                                        <span class="caret"></span>
+	                                    </button>
+	                                    <ul class="dropdown-menu pull-right" role="menu">
+	                                        <% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+                                            <li><a href="marimekko?period=<%= i%>">Period <%= i%></a></li>
+                                        <% }%>
+	                                    </ul>
+	                                </div>
+	                            </div>

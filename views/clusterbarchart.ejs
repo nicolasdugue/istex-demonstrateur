@@ -1,0 +1,42 @@
+					<div class="row">
+			            <div class="col-lg-12">
+			                <h1 class="page-header">Cluster <%= objectResult.cluster %> of period <%= objectResult.period %></h1>
+			            </div>
+			        </div>
+		                    <div class="panel panel-default">
+		                        <div class="panel-heading">
+		                            <i class="fa fa-bar-chart-o fa-fw"></i>Cluster labels
+		                            <div class="pull-right">
+		                                <div class="btn-group">
+		                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+		                                        Select period
+		                                        <span class="caret"></span>
+		                                    </button>
+		                                    <ul class="dropdown-menu pull-right" role="menu">
+				                                <% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+		                                            <li><a href="clusterbarchart?period=<%= i%>">Period <%= i%></a></li>
+		                                        <% }%>
+		                                    </ul>
+		                                </div>
+		                                <div class="btn-group">
+		                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+		                                        Select cluster
+		                                        <span class="caret"></span>
+		                                    </button>
+		                                    <ul class="dropdown-menu pull-right" role="menu">
+				                                <% for (i in objectResult.clusters) {%>
+		                                            <li><a href="clusterbarchart?period=<%= objectResult.period%>&cluster=<%= i%>">Cluster <%= i%></a></li>
+		                                        <% }%>
+		                                    </ul>
+		                                </div>
+		                            </div>
+		                        </div>
+		                        	<center>
+		                        		<%- objectResult.svgsrc %>
+		                        	</center>
+		                        <!-- /.panel-heading -->
+		                        <div class="panel-body">
+		                            <div id="morris-area-chart"></div>
+		                        </div>
+		                        <!-- /.panel-body -->
+		                    </div>
