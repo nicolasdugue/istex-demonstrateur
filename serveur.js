@@ -230,7 +230,7 @@ app
 				if (items[i].period == period)
 					data_marimekko.push(items[i]);
 			}
-			marimekko.chart(resultats, data_marimekko, 800,1000,30,res);
+			marimekko.chart(resultats, data_marimekko, 800,800,30,res);
 		}
 	});	
 
