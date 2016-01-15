@@ -56,6 +56,34 @@ app
 	page="upload";
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 })
+.get('/emptydb', function(req,res) {
+	database.clearAll();
+	page="upload";
+	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+})
+.get('/getCluster', function(req,res) {
+	database.find("clusterFeatures").sort("{ FeatureWeight : -1 }").toArray(function(err, items) {
+		logger.debug("Items returned for getCluster");
+		resultats.cluster=req.query.cluster.slice(-1);
+		resultats.period=req.query.period;
+		var data_cluster=[];
+		logger.debug("Cluster : " +resultats.cluster);
+		logger.debug("Period : " +resultats.period)
+		if (items !== undefined) {
+			for (i in items) {
+				if (items[i].period == resultats.period) {
+					if (items[i].cluster == resultats.cluster) {
+						items[i].object=items[i].FeatureName;
+						items[i].frequency=Math.round(parseFloat(items[i].FeatureWeight))*10;
+						data_cluster.push(items[i]);
+					}
+				}
+			}
+		}
+		res.send(data_cluster);
+	});
+})
+
 
 //---------------------/todo---------------------------------------------------
 //---------------------/todo---------------------------------------------------
@@ -378,7 +406,8 @@ app
 								clustersTarget[target] = new model.Cluster(target);
 							}
 							clustersSrc[src].addTarget(clustersTarget[target]);
-							clustersSrc[src].addActivity((cluster["Activity probability : s to t"]+cluster["Activity probability : t to s"])/2);
+							clustersSrc[src].addActivity((cluster["Probability of activating s knowing t"]+cluster["Probability of activating t knowing s"])/2);
+							clustersSrc[src].addMatchingType(cluster["matchingType"]);
 							list=[];
 							for (f in kernels) {
 								list.push(kernels[f]);
