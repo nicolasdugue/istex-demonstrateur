@@ -62,11 +62,28 @@
                 	<div class="panel panel-red" >
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-9"><i id='clusterdata' class="fa fa-shopping-cart fa-5x">Cluster data</i>
+                                <div class="col-xs-9"><i id='clusterdata' class="fa fa-shopping-cart fa-5x">Source Cluster data</i>
                                 </div>
                             </div>
                         </div>
                         <p id='clusterp'> </p>
+                        	<a href='#'>
+                            <div class="panel-footer">
+                                <span class="pull-left">Selected Cluster Keywords</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                            </a>
+                    </div>
+
+                    <div class="panel panel-red" >
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-9"><i id='clusterdatatgt' class="fa fa-shopping-cart fa-5x">Target Cluster data</i>
+                                </div>
+                            </div>
+                        </div>
+                        <p id='clusterptgt'> </p>
                         	<a href='#'>
                             <div class="panel-footer">
                                 <span class="pull-left">Selected Cluster Keywords</span>
@@ -103,6 +120,33 @@
 					content =content +"Label <b>"+label+"</b> is common to <span class='blueOfSrcList'>" + line.attr("src")+ " (" +srcW+")</span> and <span class='orangeOfTargetList'>"+ line.attr("target") +" ("+targetW+")</span><br />";
 				}
 				matching.innerHTML ="<b>Matching type : "+line.attr('matchingtype')+"</b><br /><br />"+content;
+
+				$.ajax({
+				       url : '/getCluster',
+				       type : 'GET',
+				       data: "cluster="+line.attr("src")+"&period="+<%= objectResult.psrc %>,
+				       success : function(result){
+				       		res=""; 
+				       		for (i in result) {
+				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		}
+				       		$('#clusterdata').html( line.attr("src") + " from Period "+ <%= objectResult.psrc %>);
+				       		$('#clusterp').html(res);
+				       }
+					});
+				$.ajax({
+				       url : '/getCluster',
+				       type : 'GET',
+				       data: "cluster="+line.attr("target")+"&period="+<%= objectResult.ptgt %>,
+				       success : function(result){
+				       		res=""; 
+				       		for (i in result) {
+				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		}
+				       		$('#clusterdatatgt').html( line.attr("target") + " from Period "+ <%= objectResult.ptgt %>);
+				       		$('#clusterptgt').html(res);
+				       }
+					});
 				
 			};
 			function mouseoutLine() {
@@ -120,6 +164,7 @@
 				d3.selectAll("[src="+classe+"]")
 				.style("stroke-opacity",function(d,i) { return 1;})
 				.style("fill-opacity",function(d,i) { return 1;});
+
 			};
 			function mouseoutSrc() {
 				classe=d3.select(this).attr("title");
@@ -132,7 +177,7 @@
 			.on("mouseout", mouseoutSrc);
 
 			$(function(){
-				$('.ClusterSource, .ClusterTarget').mouseover(function(e){
+				$('.ClusterSource').mouseover(function(e){
 					cluster= $(this).attr("title");
 					period=$(this).attr("period");
 					$.ajax({
@@ -151,4 +196,25 @@
 
 				});
 			});
+			$(function(){
+				$('.ClusterTarget').mouseover(function(e){
+					cluster= $(this).attr("title");
+					period=$(this).attr("period");
+					$.ajax({
+				       url : '/getCluster',
+				       type : 'GET',
+				       data: "cluster="+cluster+"&period="+period,
+				       success : function(result){
+				       		res=""; 
+				       		for (i in result) {
+				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		}
+				       		$('#clusterdatatgt').html( cluster + " from Period "+ period);
+				       		$('#clusterptgt').html(res);
+				       }
+					});
+
+				});
+			});
+
 		</script>
