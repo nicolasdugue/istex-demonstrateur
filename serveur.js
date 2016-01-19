@@ -405,9 +405,7 @@ app
 .get('/diachronie', function(req,res){
 	database.find("diachrony").toArray(function(err, items) {
 		logger.debug("Items returned from database for diachrony");
-		if (items === undefined) {
-		}
-		else {
+		if (items !== undefined) {
 			for (i in items) {
 				if (req.query.src === undefined || req.query.tgt === undefined || (req.query.src == items[i].srcPeriod &&  req.query.tgt == items[i].targetPeriod)) {
 					resultats.psrc=items[i].srcPeriod;
@@ -453,8 +451,39 @@ app
 							clustersSrc[src].addKernel(list, clustersTarget[target]);
 						}
 					}
-					bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
-					break;
+					database.find("clusterDesc").toArray(function(err, items) {
+						if (items !== undefined) {
+							for (i in items) {
+								logger.debug(items[i]);
+								if (items[i].period == resultats.psrc) {
+									for (c in clustersSrc) {
+										if (clustersSrc[c].name.indexOf(items[i].cluster) > -1) {
+											clustersSrc[c].addSize(items[i].DocumentNumber);
+										}
+									}
+									for (c in clustersVanished) {
+										if (clustersVanished[c].name.indexOf(items[i].cluster) > -1) {
+											clustersVanished[c].addSize(items[i].DocumentNumber);
+										}
+									}
+								}
+								else {
+									for (c in clustersTarget) {
+										if (clustersTarget[c].name.indexOf(items[i].cluster) > -1) {
+											clustersTarget[c].addSize(items[i].DocumentNumber);
+										}
+									}
+									for (c in clustersAppeared) {
+										if (clustersAppeared[c].name.indexOf(items[i].cluster) > -1) {
+											clustersAppeared[c].addSize(items[i].DocumentNumber);
+										}
+									}
+								}
+							}
+						}
+						bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
+					});
+					break;	
 				}
 			}
 		}
