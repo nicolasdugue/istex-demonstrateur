@@ -343,7 +343,6 @@ app
 			for (it in items) {
 				line=items[it];
 				if (line.FeatureName != name) {
-					logger.debug(line.FeatureName);
 					if (feature !== undefined) {
 						data_timeline.push(feature);
 					}
@@ -362,7 +361,6 @@ app
 			}
 
 		}	
-		logger.debug();
 		timeline.chart(data_timeline, 800, data_timeline.length*30+100, max, 30,res);
 	});
 
