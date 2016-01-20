@@ -170,7 +170,7 @@ app
 						var link = Object();
 						link.source=src;
 						link.target=tgt;
-						link.value=(node["Activity probability : s to t"]+node["Activity probability : t to s"])/2;
+						link.value=(node["Probability of activating s knowing t"]+node["Probability of activating s knowing t"])/2;
 						energy.links.push(link);
 					}
 				}
