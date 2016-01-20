@@ -480,7 +480,7 @@ app
 										}
 									}
 								}
-								else {
+								if (items[i].period == resultats.ptgt) { {
 									for (c in clustersTarget) {
 										if (clustersTarget[c].name.indexOf(items[i].cluster) > -1) {
 											clustersTarget[c].addSize(items[i].DocumentNumber);
