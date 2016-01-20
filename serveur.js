@@ -16,6 +16,7 @@ var marimekko=require('marimekko');
 var embeddedCircle=require('embeddedCircle');
 var timeline=require('timeline');
 var bipartite=require('bipartite');
+var sankey=require('sankey');
 
 //Model used for bipartite graph
 var model=require("clusters");
@@ -80,6 +81,8 @@ app
 			database.find("clusterFeatures").sort({ "FeatureWeight" : -1 }).toArray(function(err, items) {
 				logger.debug("Items returned for getCluster");
 				data_cluster.desc=[];
+				logger.debug("Cluster : " +resultats.cluster);
+				logger.debug("Period : " +resultats.period)
 				if (items !== undefined) {
 					for (i in items) {
 						if (items[i].period == resultats.period) {
@@ -91,10 +94,93 @@ app
 						}
 					}
 				}
+				logger.debug(data_cluster);
 				res.send(data_cluster);
 			});
 		}
 	});
+})
+.get('/clusterstat', function(req,res) {
+	database.find("clusterDesc").sort({ "period" : 1, "cluster" : 1}).toArray(function(err, items) {
+		resultats.items=items;
+		page="clusterstat";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	});
+})
+.get('/sankey', function(req,res) {
+	page="sankey";
+	database.find("diachrony").toArray(function(err, items) {
+		logger.debug("Items returned from database for Sankey");
+		if (items !== undefined) {
+			var data=Object();
+			var cpt=0;
+			var energy=Object();
+			energy.nodes=[];
+			energy.links=[];
+			var src=undefined;
+			var tgt=undefined;
+			for (it in items) {
+				var parsedJSON=items[it].json;
+				var srcPeriod=items[it].srcPeriod;
+				var tgtPeriod=items[it].targetPeriod;
+				if (!(srcPeriod in data)) {
+					data[srcPeriod]={};
+				}
+				if (!(tgtPeriod in data)) {
+					data[tgtPeriod]={};
+				}
+				for (i in parsedJSON) {
+					node=parsedJSON[i];
+					var clsSrc=Object();
+						clsSrc.sourceLinks=[];
+						clsSrc.readOnly=false;
+						clsSrc.targetLinks=[];
+					if (("Cluster source" in node) || ("Cluster Source" in node)) {
+						if ("Cluster source" in node)
+							clsSrc.name=node["Cluster source"];
+						else
+							clsSrc.name=node["Cluster Source"];
+					}
+					var clsTgt=Object();
+						clsTgt.sourceLinks=[];
+						clsTgt.readOnly=false;
+						clsTgt.targetLinks=[];
+					//Alors il y a un kernel
+					if ("Cluster Target" in node) {
+						if (!(clsSrc.name in data[srcPeriod])) {
+							data[srcPeriod][clsSrc]=cpt;
+							energy.nodes.push(clsSrc);
+							src=cpt;
+							cpt++;
+						}
+						else {
+							src=data[srcPeriod][cls.name];
+						}
+						clsTgt.name=node["Cluster Target"];
+						if (!(clsTgt.name in data[tgtPeriod])) {
+							data[tgtPeriod][clsTgt]=cpt;
+							energy.nodes.push(clsTgt);
+							tgt=cpt;
+							cpt++;
+						}
+						else {
+							tgt=data[tgtPeriod][cls.name];
+						}
+
+						var link = Object();
+						link.source=src;
+						link.target=tgt;
+						link.value=(node["Activity probability : s to t"]+node["Activity probability : t to s"])/2;
+						energy.links.push(link);
+					}
+				}
+			}
+			resultats.energy=energy;
+			sankey.chart(resultats,energy,700,200,50,res);
+		}
+	});
+
+	
 })
 
 

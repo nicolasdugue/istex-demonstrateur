@@ -42,8 +42,10 @@
 			  fill-opacity: 0.8;
 			}
 
+
 			text {
 			  font: 10px sans-serif;
+
 			}
 		</style>
 	<!-- Embedded circles for cluster matchings !-->
@@ -67,6 +69,32 @@
 			  font: 32px sans-serif;
 			}*/
 		</style>
+
+	<!-- Sankey !-->
+	<style>
+			.node rect {
+			  cursor: move;
+			  fill-opacity: .9;
+			  shape-rendering: crispEdges;
+			}
+
+			.node text {
+			  pointer-events: none;
+			  text-shadow: 0 1px 0 #fff;
+			}
+
+			.link {
+			  fill: none;
+			  stroke: #000;
+			  stroke-opacity: .2;
+			}
+
+			.link:hover {
+			  stroke-opacity: .5;
+			}
+		</style>
+
+		
 	
 	</head>
 
@@ -118,6 +146,11 @@
 			else if (page=="clusterstat") {
 			%>
 			<% include clusterstat.ejs %>
+			<%
+			}
+		else if (page=="sankey") {
+			%>
+			<% include sankey.ejs %>
 			<%
 			}
 			else {
