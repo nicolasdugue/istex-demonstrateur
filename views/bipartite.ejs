@@ -126,9 +126,9 @@
 				       type : 'GET',
 				       data: "cluster="+line.attr("src")+"&period="+<%= objectResult.psrc %>,
 				       success : function(result){
-				       		res=""; 
-				       		for (i in result) {
-				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		res="<b>"+result.size + "</b> documents<br /><br />";
+				       		for (i in result.desc) {
+				       			res+="<b>"+result.desc[i].FeatureName +"</b> "+result.desc[i].FeatureWeight+"<br />";
 				       		}
 				       		$('#clusterdata').html( line.attr("src") + " from Period "+ <%= objectResult.psrc %>);
 				       		$('#clusterp').html(res);
@@ -139,9 +139,9 @@
 				       type : 'GET',
 				       data: "cluster="+line.attr("target")+"&period="+<%= objectResult.ptgt %>,
 				       success : function(result){
-				       		res=""; 
-				       		for (i in result) {
-				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		res="<b>"+result.size + "</b> documents<br /><br />"; 
+				       		for (i in result.desc) {
+				       			res+="<b>"+result.desc[i].FeatureName +"</b> "+result.desc[i].FeatureWeight+"<br />";
 				       		}
 				       		$('#clusterdatatgt').html( line.attr("target") + " from Period "+ <%= objectResult.ptgt %>);
 				       		$('#clusterptgt').html(res);
@@ -185,9 +185,9 @@
 				       type : 'GET',
 				       data: "cluster="+cluster+"&period="+period,
 				       success : function(result){
-				       		res=""; 
-				       		for (i in result) {
-				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		res="<b>"+result.size + "</b> documents<br /><br />"; 
+				       		for (i in result.desc) {
+				       			res+="<b>"+result.desc[i].FeatureName +"</b> "+result.desc[i].FeatureWeight+"<br />";
 				       		}
 				       		$('#clusterdata').html( cluster + " from Period "+ period);
 				       		$('#clusterp').html(res);
@@ -208,9 +208,9 @@
 				       type : 'GET',
 				       data: "cluster="+cluster+"&period="+period,
 				       success : function(result){
-				       		res=""; 
-				       		for (i in result) {
-				       			res+="<b>"+result[i].FeatureName +"</b> "+result[i].FeatureWeight+"<br />";
+				       		res="<b>"+result.size + "</b> documents<br /><br />";   
+				       		for (i in result.desc) {
+				       			res+="<b>"+result.desc[i].FeatureName +"</b> "+result.desc[i].FeatureWeight+"<br />";
 				       		}
 				       		$('#clusterdatatgt').html( cluster + " from Period "+ period);
 				       		$('#clusterptgt').html(res);
