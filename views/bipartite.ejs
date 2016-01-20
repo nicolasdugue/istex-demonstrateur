@@ -132,21 +132,22 @@
 				       		}
 				       		$('#clusterdata').html( line.attr("src") + " from Period "+ <%= objectResult.psrc %>);
 				       		$('#clusterp').html(res);
+				       		$.ajax({
+						       url : '/getCluster',
+						       type : 'GET',
+						       data: "cluster="+line.attr("target")+"&period="+<%= objectResult.ptgt %>,
+						       success : function(result){
+						       		res="<b>"+result.size + "</b> documents<br /><br />"; 
+						       		for (i in result.desc) {
+						       			res+="<b>"+result.desc[i].FeatureName +"</b> "+result.desc[i].FeatureWeight+"<br />";
+						       		}
+						       		$('#clusterdatatgt').html( line.attr("target") + " from Period "+ <%= objectResult.ptgt %>);
+						       		$('#clusterptgt').html(res);
+						       }
+							});
 				       }
 					});
-				$.ajax({
-				       url : '/getCluster',
-				       type : 'GET',
-				       data: "cluster="+line.attr("target")+"&period="+<%= objectResult.ptgt %>,
-				       success : function(result){
-				       		res="<b>"+result.size + "</b> documents<br /><br />"; 
-				       		for (i in result.desc) {
-				       			res+="<b>"+result.desc[i].FeatureName +"</b> "+result.desc[i].FeatureWeight+"<br />";
-				       		}
-				       		$('#clusterdatatgt').html( line.attr("target") + " from Period "+ <%= objectResult.ptgt %>);
-				       		$('#clusterptgt').html(res);
-				       }
-					});
+				
 				
 			};
 			function mouseoutLine() {
