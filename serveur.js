@@ -195,15 +195,18 @@ app
 					resultats.energy=energy;
 					sankey.chart(resultats,energy,700,200,50,res);
 				}
-				logger.debug("i :" +i+" cluster" +energy.nodes[i].name.slice(-1) + "period" + energy.nodes[i].period);
 				where=Object();
 				where.cluster=energy.nodes[i].name.slice(-1);
 				where.period=energy.nodes[i].period;
-				database.findWhere("clusterFeatures", where ).sort({"FeatureWeight" : -1}).each(function(err, item) {
-					if (item !== undefined) {
-						energy.nodes[i].features.push(item.FeatureName);
+				database.findWhere("clusterFeatures", where ).sort({"FeatureWeight" : -1}).toArray(function(err, items) {
+					if (items !== undefined) {
+						for (it in items) {
+							energy.nodes[i].features.push(items[it].FeatureName);
+							if (it >= (items.length - 1)) {
+								add_features(i+1);
+							}
+						}
 					}
-					add_features(i+1);
 				});
 
 			};
