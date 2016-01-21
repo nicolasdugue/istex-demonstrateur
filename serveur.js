@@ -175,6 +175,10 @@ app
 						link.source=src;
 						link.target=tgt;
 						link.value=(node["Probability of activating s knowing t"]+node["Probability of activating s knowing t"])/2;
+						link.kernel=[];
+						for (feature in node["Kernel Labels"]) {
+							link.kernel.push(node["Kernel Labels"][feature].label);
+						}
 						energy.links.push(link);
 					}
 				}
