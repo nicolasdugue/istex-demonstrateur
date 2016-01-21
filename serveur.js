@@ -135,6 +135,7 @@ app
 						clsSrc.sourceLinks=[];
 						clsSrc.readOnly=false;
 						clsSrc.targetLinks=[];
+						clsSrc.period=srcPeriod;
 					if (("Cluster source" in node) || ("Cluster Source" in node)) {
 						if ("Cluster source" in node)
 							clsSrc.name=node["Cluster source"];
@@ -147,24 +148,27 @@ app
 						clsTgt.targetLinks=[];
 					//Alors il y a un kernel
 					if ("Cluster Target" in node) {
+						logger.debug("Kernel entre période " + srcPeriod +" et période "+ tgtPeriod);
 						if (!(clsSrc.name in data[srcPeriod])) {
-							data[srcPeriod][clsSrc]=cpt;
+							data[srcPeriod][clsSrc.name]=cpt;
 							energy.nodes.push(clsSrc);
 							src=cpt;
 							cpt++;
 						}
 						else {
-							src=data[srcPeriod][cls.name];
+							src=data[srcPeriod][clsSrc.name];
 						}
 						clsTgt.name=node["Cluster Target"];
+						clsTgt.period=tgtPeriod;
+						logger.debug("Cluster " + clsSrc.name +" et "+ clsTgt.name);
 						if (!(clsTgt.name in data[tgtPeriod])) {
-							data[tgtPeriod][clsTgt]=cpt;
+							data[tgtPeriod][clsTgt.name]=cpt;
 							energy.nodes.push(clsTgt);
 							tgt=cpt;
 							cpt++;
 						}
 						else {
-							tgt=data[tgtPeriod][cls.name];
+							tgt=data[tgtPeriod][clsTgt.name];
 						}
 
 						var link = Object();
