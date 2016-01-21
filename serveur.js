@@ -189,23 +189,25 @@ app
 					}
 				}
 			}
-			for (i in energy.nodes) {
-				logger.debug("cluster" +energy.nodes[i].name.slice(-1) + "period" + energy.nodes[i].period);
+
+			var add_features=function(i) {
+				if (i >= (energy.nodes.length - 1)) {
+					resultats.energy=energy;
+					sankey.chart(resultats,energy,700,200,50,res);
+				}
+				logger.debug("i :" +i+" cluster" +energy.nodes[i].name.slice(-1) + "period" + energy.nodes[i].period);
 				where=Object();
 				where.cluster=energy.nodes[i].name.slice(-1);
 				where.period=energy.nodes[i].period;
 				database.findWhere("clusterFeatures", where ).sort({"FeatureWeight" : -1}).each(function(err, item) {
 					if (item !== undefined) {
-						logger.debug(item);
 						energy.nodes[i].features.push(item.FeatureName);
 					}
-					if (i >= (energy.nodes.length - 1)) {
-						resultats.energy=energy;
-						logger.debug(energy.nodes);
-						sankey.chart(resultats,energy,700,200,50,res);
-					}
+					add_features(i+1);
 				});
-			}
+
+			};
+			add_features(0);
 			
 		}
 	});
