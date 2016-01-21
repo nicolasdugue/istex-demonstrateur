@@ -191,9 +191,9 @@ app
 			}
 
 			var add_features=function(i) {
-				if (i >= (energy.nodes.length - 1)) {
+				if (i > (energy.nodes.length - 1)) {
 					resultats.energy=energy;
-					sankey.chart(resultats,energy,700,200,50,res);
+					sankey.chart(resultats,energy,1000,200,50,res);
 				}
 				where=Object();
 				where.cluster=energy.nodes[i].name.slice(-1);
