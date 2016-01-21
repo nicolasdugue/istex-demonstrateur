@@ -53,6 +53,10 @@ app
 	next();
 })
 
+.get('/test', function(req,res) {
+	database.findWhere("l", "bl");
+})
+
 .get('/upload', function(req,res) {
 	page="upload";
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
@@ -119,6 +123,7 @@ app
 			energy.links=[];
 			var src=undefined;
 			var tgt=undefined;
+			where=Object();
 			for (it in items) {
 				var parsedJSON=items[it].json;
 				var srcPeriod=items[it].srcPeriod;
@@ -136,6 +141,7 @@ app
 						clsSrc.readOnly=false;
 						clsSrc.targetLinks=[];
 						clsSrc.period=srcPeriod;
+						clsSrc.features=[];
 					if (("Cluster source" in node) || ("Cluster Source" in node)) {
 						if ("Cluster source" in node)
 							clsSrc.name=node["Cluster source"];
@@ -146,11 +152,12 @@ app
 						clsTgt.sourceLinks=[];
 						clsTgt.readOnly=false;
 						clsTgt.targetLinks=[];
+						clsTgt.features=[];
 					//Alors il y a un kernel
 					if ("Cluster Target" in node) {
-						logger.debug("Kernel entre période " + srcPeriod +" et période "+ tgtPeriod);
 						if (!(clsSrc.name in data[srcPeriod])) {
 							data[srcPeriod][clsSrc.name]=cpt;
+							where.cluster=clsSrc.name.slice(-1);
 							energy.nodes.push(clsSrc);
 							src=cpt;
 							cpt++;
@@ -160,7 +167,6 @@ app
 						}
 						clsTgt.name=node["Cluster Target"];
 						clsTgt.period=tgtPeriod;
-						logger.debug("Cluster " + clsSrc.name +" et "+ clsTgt.name);
 						if (!(clsTgt.name in data[tgtPeriod])) {
 							data[tgtPeriod][clsTgt.name]=cpt;
 							energy.nodes.push(clsTgt);
@@ -170,7 +176,7 @@ app
 						else {
 							tgt=data[tgtPeriod][clsTgt.name];
 						}
-
+						
 						var link = Object();
 						link.source=src;
 						link.target=tgt;
@@ -183,8 +189,24 @@ app
 					}
 				}
 			}
-			resultats.energy=energy;
-			sankey.chart(resultats,energy,700,200,50,res);
+			for (i in energy.nodes) {
+				logger.debug("cluster" +energy.nodes[i].name.slice(-1) + "period" + energy.nodes[i].period);
+				where=Object();
+				where.cluster=energy.nodes[i].name.slice(-1);
+				where.period=energy.nodes[i].period;
+				database.findWhere("clusterFeatures", where ).sort({"FeatureWeight" : -1}).each(function(err, item) {
+					if (item !== undefined) {
+						logger.debug(item);
+						energy.nodes[i].features.push(item.FeatureName);
+					}
+					if (i >= (energy.nodes.length - 1)) {
+						resultats.energy=energy;
+						logger.debug(energy.nodes);
+						sankey.chart(resultats,energy,700,200,50,res);
+					}
+				});
+			}
+			
 		}
 	});
 
