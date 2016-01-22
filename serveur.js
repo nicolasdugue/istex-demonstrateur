@@ -193,7 +193,7 @@ app
 			var add_features=function(i) {
 				if (i > (energy.nodes.length - 1)) {
 					resultats.energy=energy;
-					sankey.chart(resultats,energy,1000,200,50,res);
+					sankey.chart(resultats,energy,1000,800,60,res);
 				}
 				where=Object();
 				where.cluster=energy.nodes[i].name.slice(-1);
