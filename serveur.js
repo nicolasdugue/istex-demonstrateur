@@ -375,7 +375,7 @@ app
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
 .get('/marimekko', function(req,res){
-	database.find("clusterFeatures").toArray(function(err, items) {
+	database.find("clusterFeatures").sort({"FeatureWeight" : 1}).toArray(function(err, items) {
 		logger.debug("Items returned from database for marimekko");
 		if (items === undefined) {
 		}
