@@ -643,7 +643,7 @@ res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 
   var Engine = require('tingodb')();
   var assert = require('assert');
-  var async  = require ('async')
+
 
   var db = new Engine.Db('./db', {"id" : 2});
   var collection = db.collection("indexation");
@@ -718,7 +718,7 @@ res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 
           	//var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
 
-            barchart.chart(resultats, dataset,1200,200,50,20,res);
+            barchart.chart(resultats, dataset,1400,800,50,20,res);
             }
         }, 500);
       }
