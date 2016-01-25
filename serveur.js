@@ -359,7 +359,7 @@ app
 					}
 					if (items[i].cluster == resultats.cluster) {
 						items[i].object=items[i].FeatureName;
-						items[i].frequency=Math.round(parseFloat(items[i].FeatureWeight))*10;
+						items[i].frequency=Math.round(parseFloat(items[i].FeatureWeight));
 						data_cluster.push(items[i]);
 					}
 				}
