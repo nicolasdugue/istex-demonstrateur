@@ -483,7 +483,7 @@ app
 					}
 					if (items[i].cluster == resultats.cluster) {
 						items[i].object=items[i].FeatureName;
-						items[i].frequency=Math.round(parseFloat(items[i].FeatureWeight));
+						items[i].frequency=parseFloat(items[i].FeatureWeight).toFixed(1);
 						data_cluster.push(items[i]);
 					}
 				}
