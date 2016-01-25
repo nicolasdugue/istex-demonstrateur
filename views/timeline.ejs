@@ -50,12 +50,24 @@
 				d3.select(g).selectAll("text.value").style("display","none");
 			};
 
+            function mouseoverOpacity(p) {
+                var g = d3.select(this).node();
+                d3.select(g).style("fill-opacity","0.01");
+            };
+
+            function mouseoutOpacity(p) {
+                var g = d3.select(this).node();
+                d3.select(g).style("fill-opacity","0.1");
+            };
+
 			var g = d3.selectAll(".journal");
 			g.on("mouseover", mouseover)
 			.on("mouseout", mouseout);
-			/*var g = d3.selectAll(".value");
-			g.on("mouseover", mouseover)
-			.on("mouseout", mouseout);*/
+
+            var g = d3.selectAll(".word");
+            g.on("mouseover", mouseoverOpacity)
+            .on("mouseout", mouseoutOpacity);
+
 		</script>
 
 	
