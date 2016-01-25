@@ -8,6 +8,7 @@ database.populate();
 
 //To read files
 var     lazy    = require("lazy"),
+        LineByLineReader = require('line-by-line'),
         fs  = require("fs");
 
 //Istex coded modules to draw charts
@@ -17,6 +18,8 @@ var embeddedCircle=require('embeddedCircle');
 var timeline=require('timeline');
 var bipartite=require('bipartite');
 var sankey=require('sankey');
+
+var assert = require('assert');
 
 //Model used for bipartite graph
 var model=require("clusters");
@@ -241,7 +244,7 @@ app
 	name=req.files.arff.name;
 
 	page="upload";
-  var i = 0;
+  	var i = 0;
 	if (name.indexOf(".arff") > -1) {
 		logger.debug(req.files.arff.name);
 		logger.debug(req.files.arff.path);
@@ -258,7 +261,7 @@ app
       fs.unlinkSync('./map/numbers.txt');
       fs.unlinkSync('./map/names.txt');
     } catch (err) {
-    console.log("Error:", err)
+    	logger.debug("Error:", err)
     }
 
     //On cree de nouveaux fichiers intermediaires
@@ -266,36 +269,34 @@ app
     var fd_names = fs.openSync(path.join(process.cwd(), '/map/names.txt'), 'a')
 
     new lazy(fs.createReadStream(req.files.arff.path)).lines.forEach(
-      function(line){
-        line=line.toString();
-        tab=line.split(" ");
-        if (tab[0].localeCompare("@attribute")==0)
-        {
-          names =1;
-        }
-        else {
-          names = 0;
-        }
-        if(numbers)
-        {
-           fs.writeSync(fd_numbers, tab[0]+"\n")
-        }
-        else if(names){
-           fs.writeSync(fd_names, tab[1]+"\n");
-        }
-        if(! tab[0].localeCompare("@data")){
-          console.log("on y est ! ")
-          numbers=1;
-        }
-      }
+		function(line){
+			line=line.toString();
+			tab=line.split(" ");
+			if (tab[0].localeCompare("@attribute")==0)
+			{
+			  names =1;
+			}
+			else {
+			  names = 0;
+			}
+			if(numbers)
+			{
+			   fs.writeSync(fd_numbers, tab[0]+"\n")
+			}
+			else if(names){
+			   fs.writeSync(fd_names, tab[1]+"\n");
+			}
+			if(! tab[0].localeCompare("@data")){
+			  console.log("on y est ! ")
+			  numbers=1;
+			}
+		}
     ).on('pipe', function() { //Une fois les fichiers créés, on les enregistre
         fs.closeSync(fd_names);
         fs.closeSync(fd_numbers);
 
         //Solution adaptee pour gros volumes, gestion par evenements emitter
         //--
-
-        var LineByLineReader = require('line-by-line'),
         lnm = new LineByLineReader('./map/names.txt');
         lnb = new LineByLineReader('./map/numbers.txt');
         var table;
@@ -311,9 +312,6 @@ app
         });
 
         lnb.on('line', function (lineb) {
-
-          //console.log("name : " + name)
-          //console.log("number : " + lineb);
 
           table = lineb.split(",");
           for (var freq in table) {
@@ -353,13 +351,13 @@ app
       });
 
 
-resultats.upload="Upload de "+req.files.arff.name+" réussi.";
-res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-}
-else {
-resultats.upload="Upload de "+req.files.arff.name+" : échec. Le fichier n'a pas l'extension arff !";
-res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-}
+		resultats.upload="Upload de "+req.files.arff.name+" réussi.";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
+	else {
+		resultats.upload="Upload de "+req.files.arff.name+" : échec. Le fichier n'a pas l'extension arff !";
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	}
 })
 
 .post('/uploadSclu', function(req, res) {
@@ -647,13 +645,7 @@ res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 //---------------------/barchart_arff---------------------------------------------------
 .get('/barchart_arff', function(req,res){
 
-  var Engine = require('tingodb')();
-  var assert = require('assert');
-
-
-  var db = new Engine.Db('./db', {"id" : 2});
-  var collection = db.collection("indexation");
-  var cursor = collection.find({});
+  var cursor = database.find("indexation");
   var top_ten = [0,0,0,0,0,0,0,0,0,0];
   var top_names = ["","","","","","","","","",""]
   var temp_names;
@@ -666,15 +658,7 @@ res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
   cursor.each(function(err,item) {
           j++;
           // If the item is null then the cursor is exhausted/empty and closed
-          if(item == null) {
-            // Show that the cursor is closed
-            cursor.toArray(function(err, items) {
-              assert.ok(err != null);
-              // Let's close the db
-              db.close();
-            });
-          }
-          else{
+          if (item != null) {
             //console.log(item.maximum_frequency)
             temp_ten = top_ten.slice();
             temp_names = top_names.slice();
@@ -693,7 +677,6 @@ res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
                 top_ten[i+1] = temp_ten[i];
                 top_names[i+1] = temp_names[i];
                 i++;
-                console.log(item.word);
 
               }
             }
@@ -724,7 +707,7 @@ res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 
           	//var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
 
-            barchart.chart(resultats, dataset,1400,800,50,20,res);
+            barchart.chart(resultats, dataset,800,800,50,20,res);
             }
         }, 500);
       }
