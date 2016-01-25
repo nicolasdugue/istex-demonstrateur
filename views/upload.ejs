@@ -4,6 +4,7 @@
 	                <h1 class="page-header">Upload files to visualize</h1>
 	            </div>
 	        </div>
+	        <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw">Step 1 : Specify how many periods you consider for the diachrony</i>
@@ -12,7 +13,7 @@
                         		<form method='post' action="periodNumber">
                         			<SELECT name="periodNumber" size="1">
                         				<OPTION>
-										<OPTION 
+										<OPTION
 											<% if (objectResult.experiment == 2) {%>
 												SELECTED
 											<% }%>
@@ -37,13 +38,24 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
+                 </div>
 
+	        <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw">Step 2 : Upload arff for each period</i>
                         </div>
                         	<center>
-                        		<%- objectResult %>
+														<form action="uploadArff"
+                                    enctype="multipart/form-data" method="post">
+
+                                    <p>
+                                    <label for="sclu">Chose the arff file to submit :</label>
+                                    <input type="file" name="arff">
+                                    </p>
+                                    <input type="submit" value="Upload">
+                                </form>
+                        		<!--%- objectResult %-->
                         	</center>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -51,7 +63,8 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
-
+                 </div>
+            <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw">Step 3 : Upload sclu for each period</i>
@@ -80,7 +93,9 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
+                 </div>
 
+            <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw">Step 4 : Upload dcsl for each period</i>
@@ -109,7 +124,9 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
+                 </div>
 
+            <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw">Step 5 : Upload json diachrony results between periods considered in your study</i>
@@ -148,3 +165,4 @@
                         </div>
                         <!-- /.panel-body -->
                     </div>
+                 </div>
