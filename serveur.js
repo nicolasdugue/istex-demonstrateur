@@ -489,7 +489,7 @@ app
 				}
 			}
 		}
-		barchart.chart(resultats,data_cluster,700,200,50,20,res);
+		barchart.chart(resultats,data_cluster,700,200,50,30,res);
 	});
 
 })
@@ -625,7 +625,7 @@ app
 			}
 
 		}
-		timeline.chart(data_timeline, list_period, 800, data_timeline.length*60+100, max, 30,res);
+		timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
 	});
 
 	//data_timeline=[{"frequency" : [["P1",250],["P2",300],["P3",400]], "total": 950, "name": "Caregiver"},{"frequency" : [["P1",125],["P2",100],["P3",25]], "total": 250, "name": "Nurse"},{"frequency" : [["P1",175],["P2",135],["P3",125]], "total": 435, "name": "Brain"},{"frequency" : [["P1",125],["P2",175],["P3",25]], "total": 250, "name": "Liver"},{"frequency" : [["P1",125],["P2",175],["P3",225]], "total": 250, "name": "Blood"},{"frequency" : [["P1",125],["P2",175],["P3",325]], "total": 250, "name": "Cancer"}];
