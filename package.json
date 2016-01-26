@@ -10,6 +10,7 @@
     "jsdom": "^7.1.0",
     "lazy": "^1.0.11",
     "line-by-line": "^0.1.4",
+    "mongodb": "^2.1.4",
     "tingodb": "~0.4.0",
     "winston": "~2.1.1"
   },

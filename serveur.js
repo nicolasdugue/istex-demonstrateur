@@ -592,8 +592,7 @@ app
 			}
 		}
 	});*/
-	if (req.query.src === undefined)
-	database.find("clusterFeatures").sort({"FeatureName" : 1, "period" : 1}).toArray(function(err, items) {
+	var createTimeline= function(err, items) {
 		data_timeline=[];
 		var periods={};
 		var list_period=[];
@@ -624,10 +623,69 @@ app
 					list_period.push(line.period);
 				}
 			}
-
 		}
+		console.log(data_timeline);
 		timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
-	});
+	};
+	console.log(req.query);
+	if (req.query.sort === undefined)
+		database.find("clusterFeatures").sort({"FeatureName" : 1, "period" : 1}).toArray(createTimeline);
+	else {
+		m = function() {
+			objet = Object();
+			objet.FeatureName=this.FeatureName;
+			objet.FeatureWeight=this.FeatureWeight;
+			objet.Period = "P"+this.period;
+        	emit(this.FeatureName, objet);
+		}
+		r = function(k, v) {
+			objet = Object();
+			objet.v=[];
+			var sum=0;
+			for (i in v) {
+				sum+=parseFloat(v[i].FeatureWeight);
+				var period =[v[i].Period, v[i].FeatureWeight]
+				objet.v.push(period);
+			}
+			objet.FeatureWeight=sum;
+	        return objet;
+	    }
+		database.mapReduce("clusterFeatures", m, r);
+		var data_timeline=[];
+		var periods={};
+		var list_period=[];
+		var max=-1;
+		database.find("mapreduce").sort({"FeatureWeight" : -1}).each(function (err, item) {
+			if (item == null) {
+				timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
+			}
+			if (item !== undefined) {
+				
+				feature=Object();
+				value=item["value"];
+				feature.name=item["_id"];
+				if (value !== undefined) {
+					if ("v" in value) {
+						feature.frequency=value["v"];
+					}
+					else {
+						if (!(value.Period in periods)) {
+							periods[value.Period]=true;
+							list_period.push(value.Period);
+						}
+						if (value.FeatureWeight > max)
+							max=value.FeatureWeight;
+						feature.frequency=[[value.Period, parseFloat(value.FeatureWeight)]];
+					}
+					data_timeline.push(feature);
+				}
+				
+
+			}
+
+		});
+	
+	}
 
 	//data_timeline=[{"frequency" : [["P1",250],["P2",300],["P3",400]], "total": 950, "name": "Caregiver"},{"frequency" : [["P1",125],["P2",100],["P3",25]], "total": 250, "name": "Nurse"},{"frequency" : [["P1",175],["P2",135],["P3",125]], "total": 435, "name": "Brain"},{"frequency" : [["P1",125],["P2",175],["P3",25]], "total": 250, "name": "Liver"},{"frequency" : [["P1",125],["P2",175],["P3",225]], "total": 250, "name": "Blood"},{"frequency" : [["P1",125],["P2",175],["P3",325]], "total": 250, "name": "Cancer"}];
 	//timeline.chart(data_timeline, 1000, 600, 2005, 2013, 30,res);
