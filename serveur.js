@@ -287,7 +287,6 @@ app
 			   fs.writeSync(fd_names, tab[1]+"\n");
 			}
 			if(! tab[0].localeCompare("@data")){
-			  console.log("on y est ! ")
 			  numbers=1;
 			}
 		}
@@ -624,39 +623,43 @@ app
 				}
 			}
 		}
-		console.log(data_timeline);
 		timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
 	};
-	console.log(req.query);
 	if (req.query.sort === undefined)
 		database.find("clusterFeatures").sort({"FeatureName" : 1, "period" : 1}).toArray(createTimeline);
 	else {
-		m = function() {
-			objet = Object();
-			objet.FeatureName=this.FeatureName;
-			objet.FeatureWeight=this.FeatureWeight;
-			objet.Period = "P"+this.period;
-        	emit(this.FeatureName, objet);
-		}
-		r = function(k, v) {
-			objet = Object();
-			objet.v=[];
-			var sum=0;
-			for (i in v) {
-				sum+=parseFloat(v[i].FeatureWeight);
-				var period =[v[i].Period, v[i].FeatureWeight]
-				objet.v.push(period);
-			}
-			objet.FeatureWeight=sum;
-	        return objet;
-	    }
-		database.mapReduce("clusterFeatures", m, r);
+		database.find("mapreduce").toArray(function(err, items) {
+			//if (items.length <= 0) {
+				m = function() {
+					objet = Object();
+					objet.FeatureName=this.FeatureName;
+					objet.FeatureWeight=parseFloat(this.FeatureWeight);
+					objet.Period = "P"+this.period;
+		        	emit(this.FeatureName, objet);
+				}
+				r = function(k, v) {
+					objet = Object();
+					objet.v=[];
+					var sum=0;
+					for (i in v) {
+						sum+=parseFloat(v[i].FeatureWeight);
+						var period =[v[i].Period, v[i].FeatureWeight]
+						objet.v.push(period);
+					}
+					objet.FeatureWeight=sum;
+			        return objet;
+			    }
+				database.mapReduce("clusterFeatures", m, r);
+			//}
+
+		});
 		var data_timeline=[];
 		var periods={};
 		var list_period=[];
 		var max=-1;
-		database.find("mapreduce").sort({"FeatureWeight" : -1}).each(function (err, item) {
+		database.find("mapreduce").sort({"value.FeatureWeight" : -1}).each(function (err, item) {
 			if (item == null) {
+				//console.log(data_timeline);
 				timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
 			}
 			if (item !== undefined) {
@@ -748,21 +751,15 @@ app
         function attente(){
           progress = j;
           setTimeout(function() {
-          console.log("J'attends");
           if (j!=progress)
             {
-              console.log(j)
-              console.log(progress)
               attente(); // on recommence
           }else{
-            console.log(top_ten)
-            console.log(top_names)
             var dataset = []
             for (el in top_ten)
             {
               dataset.push({"object" : top_names[el].toString(), "frequency" : top_ten[el]});
             }
-            console.log(dataset);
 
           	//var dataset=[{"object" : "caregiver", "frequency" :10},{"object" : "brain", "frequency" :50},{"object" : "liver", "frequency" :72},{"object" : "mice", "frequency" :12},{"object" : "nurse", "frequency" :35},{"object" : "blood", "frequency" :65},{"object" : "heart", "frequency" :28},{"object" : "disease", "frequency" :47}];
 
