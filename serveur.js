@@ -592,6 +592,7 @@ app
 			}
 		}
 	});*/
+	if (req.query.src === undefined)
 	database.find("clusterFeatures").sort({"FeatureName" : 1, "period" : 1}).toArray(function(err, items) {
 		data_timeline=[];
 		var periods={};
