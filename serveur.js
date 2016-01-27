@@ -88,8 +88,8 @@ app
 			database.find("clusterFeatures").sort({ "FeatureWeight" : -1 }).toArray(function(err, items) {
 				logger.debug("Items returned for getCluster");
 				data_cluster.desc=[];
-				logger.debug("Cluster : " +resultats.cluster);
-				logger.debug("Period : " +resultats.period)
+				//logger.debug("Cluster : " +resultats.cluster);
+				//logger.debug("Period : " +resultats.period)
 				if (items !== undefined) {
 					for (i in items) {
 						if (items[i].period == resultats.period) {
@@ -101,7 +101,7 @@ app
 						}
 					}
 				}
-				logger.debug(data_cluster);
+				//logger.debug(data_cluster);
 				res.send(data_cluster);
 			});
 		}
@@ -850,7 +850,6 @@ app
 					database.find("clusterDesc").toArray(function(err, items) {
 						if (items !== undefined) {
 							for (i in items) {
-								logger.debug(items[i]);
 								if (items[i].period == resultats.psrc) {
 									for (c in clustersSrc) {
 										if (clustersSrc[c].name.indexOf(items[i].cluster) > -1) {
