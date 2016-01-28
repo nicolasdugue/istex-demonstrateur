@@ -4,6 +4,7 @@ var express=require('express');
 var app =express();
 
 var database = require('db');
+var currentDb="demo";
 database.populate();
 
 //To read files
@@ -46,7 +47,7 @@ app
 })
 
 .use(function(req,res,next) {
-	database.find("experiment").toArray(function(err, items) {
+	database.find("experiment", currentDb).toArray(function(err, items) {
 		if (items.length > 0)
 			resultats.experiment=items[items.length - 1].periodNumber;
 		else
@@ -54,10 +55,6 @@ app
 
 	});
 	next();
-})
-
-.get('/test', function(req,res) {
-	database.findWhere("l", "bl");
 })
 
 .get('/upload', function(req,res) {
@@ -70,7 +67,7 @@ app
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 })
 .get('/getCluster', function(req,res) {
-	database.find("clusterDesc").toArray(function(err, items) {
+	database.find("clusterDesc", currentDb).toArray(function(err, items) {
 		if (items !== undefined) {
 			resultats.cluster=req.query.cluster.slice(-1);
 			resultats.period=req.query.period;
@@ -85,7 +82,7 @@ app
 					}
 				}
 			}
-			database.find("clusterFeatures").sort({ "FeatureWeight" : -1 }).toArray(function(err, items) {
+			database.find("clusterFeatures", currentDb).sort({ "FeatureWeight" : -1 }).toArray(function(err, items) {
 				logger.debug("Items returned for getCluster");
 				data_cluster.desc=[];
 				//logger.debug("Cluster : " +resultats.cluster);
@@ -108,7 +105,7 @@ app
 	});
 })
 .get('/clusterstat', function(req,res) {
-	database.find("clusterDesc").sort({ "period" : 1, "cluster" : 1}).toArray(function(err, items) {
+	database.find("clusterDesc", currentDb).sort({ "period" : 1, "cluster" : 1}).toArray(function(err, items) {
 		resultats.items=items;
 		page="clusterstat";
 		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
@@ -116,7 +113,7 @@ app
 })
 .get('/sankey', function(req,res) {
 	page="sankey";
-	database.find("diachrony").toArray(function(err, items) {
+	database.find("diachrony", currentDb).toArray(function(err, items) {
 		logger.debug("Items returned from database for Sankey");
 		if (items !== undefined) {
 			var data=Object();
@@ -184,6 +181,7 @@ app
 						link.source=src;
 						link.target=tgt;
 						link.value=(node["Probability of activating s knowing t"]+node["Probability of activating s knowing t"])/2;
+						link.matchingType=node["matchingType"];
 						link.kernel=[];
 						for (feature in node["Kernel Labels"]) {
 							link.kernel.push(node["Kernel Labels"][feature].label);
@@ -201,7 +199,7 @@ app
 				where=Object();
 				where.cluster=energy.nodes[i].name.slice(-1);
 				where.period=energy.nodes[i].period;
-				database.findWhere("clusterFeatures", where ).sort({"FeatureWeight" : -1}).toArray(function(err, items) {
+				database.findWhere("clusterFeatures", where, currentDb ).sort({"FeatureWeight" : -1}).toArray(function(err, items) {
 					if (items !== undefined) {
 						for (it in items) {
 							energy.nodes[i].features.push(items[it].FeatureName);
@@ -225,7 +223,7 @@ app
 //---------------------/todo---------------------------------------------------
 //---------------------/todo---------------------------------------------------
 //---------------------/todo---------------------------------------------------
-.get('/todo', function(req,res) {
+.get('/', function(req,res) {
 	page="accueil";
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 	/*database.find("todolist").toArray(function(err, items) {
@@ -235,7 +233,7 @@ app
 })
 .post('/periodNumber', function(req, res) {
 	if (req.body.periodNumber != '') {
-		database.insert("experiment", {'periodNumber' : req.body.periodNumber});
+		database.insert("experiment", {'periodNumber' : req.body.periodNumber}, currentDb);
 	}
 	res.redirect('/upload');
 })
@@ -317,7 +315,7 @@ app
             if (parseInt(table[freq]) > max_freq)
               max_freq = parseInt(table[freq]) ;
           }
-          database.insert("indexation", {'word' : name, 'frequency' : lineb, 'maximum_frequency' : max_freq});
+          database.insert("indexation", {'word' : name, 'frequency' : lineb, 'maximum_frequency' : max_freq}, currentDb);
           lnb.pause();
           max_freq = 0;
           lnm.resume(); //semaphore
@@ -376,7 +374,7 @@ app
 		    	cl=tab[0];
 		    	featuresNb=tab[2];
 		    	docNb=tab[7];
-		    	database.insert("clusterDesc", {'cluster' : cl, 'period' : req.body.periodNumber, 'FeaturesNumber' : featuresNb, 'DocumentNumber' : docNb});
+		    	database.insert("clusterDesc", {'cluster' : cl, 'period' : req.body.periodNumber, 'FeaturesNumber' : featuresNb, 'DocumentNumber' : docNb}, currentDb);
 		    }
 		}
 		);
@@ -410,7 +408,7 @@ app
 			    	if (tab.length == 2) {
 				    	featureWeight=tab[0];
 				    	featureName=tab[1];
-				    	database.insert("clusterFeatures", {'cluster' : clusterId, 'period' : req.body.periodNumber, 'FeatureWeight' : featureWeight, 'FeatureName' : featureName});
+				    	database.insert("clusterFeatures", {'cluster' : clusterId, 'period' : req.body.periodNumber, 'FeatureWeight' : featureWeight, 'FeatureName' : featureName}, currentDb);
 			    	}
 			    }
 			}
@@ -425,33 +423,6 @@ app
 	}
 })
 
-//---------------------/todoajouter---------------------------------------------------
-//---------------------/todoajouter---------------------------------------------------
-//---------------------/todoajouter---------------------------------------------------
-.post('/todo/ajouter/', function(req, res) {
-	if (req.body.newtodo != '') {
-		database.insert("todolist");
-	}
-	res.redirect('/todo');
-})
-//---------------------/todo/supprimer/---------------------------------------------------
-//---------------------/todo/supprimer/---------------------------------------------------
-//---------------------/todo/supprimer/---------------------------------------------------
-.get('/todo/supprimer/:id', function(req,res){
-	if (req.params.id !='') {
-		database.remove("todolist",{"_id" : new database.engine.ObjectID(req.params.id)});
-	}
-	res.redirect('/todo');
-})
-//---------------------/words---------------------------------------------------
-//---------------------/words---------------------------------------------------
-//---------------------/words---------------------------------------------------
-.get('/words', function(req,res){
-	database.find("words").toArray(function(err, items) {
-		resultats.mongodb=items;
-		res.render('words.ejs', {objectResult: resultats});
-	});
-})
 
 //---------------------/clusterbarchart---------------------------------------------------
 //---------------------/clusterbarchart---------------------------------------------------
@@ -469,7 +440,7 @@ app
 	}
 	resultats.clusters={};
 	var data_cluster=[];
-	database.find("clusterFeatures").toArray(function(err, items) {
+	database.find("clusterFeatures", currentDb).toArray(function(err, items) {
 		logger.debug("Items returned from database for chart");
 		if (items !== undefined) {
 			for (i in items) {
@@ -498,7 +469,7 @@ app
 //---------------------/marimekko---------------------------------------------------
 //---------------------/marimekko---------------------------------------------------
 .get('/marimekko', function(req,res){
-	database.find("clusterFeatures").sort({"FeatureWeight" : 1}).toArray(function(err, items) {
+	database.find("clusterFeatures", currentDb).sort({"FeatureWeight" : 1}).toArray(function(err, items) {
 		logger.debug("Items returned from database for marimekko");
 		if (items === undefined) {
 		}
@@ -525,7 +496,7 @@ app
 //---------------------/circles---------------------------------------------------
 //---------------------/circles---------------------------------------------------
 .get('/circles', function(req,res){
-	database.find("diachrony").toArray(function(err, items) {
+	database.find("diachrony", currentDb).toArray(function(err, items) {
 		logger.debug("Items returned from database for diachrony");
 		if (req.query.psrc === undefined || req.query.ptgt === undefined) {
 			resultats.psrc="1";
@@ -626,16 +597,19 @@ app
 		timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
 	};
 	if (req.query.sort === undefined)
-		database.find("clusterFeatures").sort({"FeatureName" : 1, "period" : 1}).toArray(createTimeline);
+		database.find("clusterFeatures", currentDb).sort({"FeatureName" : 1, "period" : 1}).toArray(createTimeline);
 	else {
-		database.find("mapreduce").toArray(function(err, items) {
+		database.find("mapreduce", currentDb).toArray(function(err, items) {
 			//if (items.length <= 0) {
 				m = function() {
-					objet = Object();
-					objet.FeatureName=this.FeatureName;
-					objet.FeatureWeight=parseFloat(this.FeatureWeight);
-					objet.Period = "P"+this.period;
-		        	emit(this.FeatureName, objet);
+					valeur = Object();
+					valeur.FeatureName=this.FeatureName;
+					valeur.FeatureWeight=parseFloat(this.FeatureWeight);
+					valeur.Period = "P"+this.period;
+					if (this.database == database) {
+						valeur.database=database;
+		        		emit(this.FeatureName, valeur);
+		        	}
 				}
 				r = function(k, v) {
 					objet = Object();
@@ -645,11 +619,12 @@ app
 						sum+=parseFloat(v[i].FeatureWeight);
 						var period =[v[i].Period, v[i].FeatureWeight]
 						objet.v.push(period);
+						objet.database=v[i].database;
 					}
 					objet.FeatureWeight=sum;
 			        return objet;
 			    }
-				database.mapReduce("clusterFeatures", m, r);
+				database.mapReduce("clusterFeatures", m, r, {database : currentDb});
 			//}
 
 		});
@@ -657,13 +632,11 @@ app
 		var periods={};
 		var list_period=[];
 		var max=-1;
-		database.find("mapreduce").sort({"value.FeatureWeight" : -1}).each(function (err, item) {
+		database.find("mapreduce", currentDb).sort({"value.FeatureWeight" : -1}).each(function (err, item) {
 			if (item == null) {
-				//console.log(data_timeline);
 				timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
 			}
 			if (item !== undefined) {
-				
 				feature=Object();
 				value=item["value"];
 				feature.name=item["_id"];
@@ -707,7 +680,7 @@ app
 //---------------------/barchart_arff---------------------------------------------------
 .get('/barchart_arff', function(req,res){
 
-  var cursor = database.find("indexation");
+  var cursor = database.find("indexation", currentDb);
   var top_ten = [0,0,0,0,0,0,0,0,0,0];
   var top_names = ["","","","","","","","","",""]
   var temp_names;
@@ -787,7 +760,7 @@ app
 				resultats.upload="Upload de "+req.files.jsond.name+" failed : "+err;
 				res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 			}
-			database.insert("diachrony", {'srcPeriod' : req.body.periodNumberSrc, 'targetPeriod' : req.body.periodNumberTarget, 'json' : JSON.parse(data.toString())});
+			database.insert("diachrony", {'srcPeriod' : req.body.periodNumberSrc, 'targetPeriod' : req.body.periodNumberTarget, 'json' : JSON.parse(data.toString())}, currentDb);
 		});
 		resultats.upload="Upload de "+req.files.jsond.name+" réussi.";
 		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
@@ -799,7 +772,7 @@ app
 })
 
 .get('/diachronie', function(req,res){
-	database.find("diachrony").toArray(function(err, items) {
+	database.find("diachrony", currentDb).toArray(function(err, items) {
 		logger.debug("Items returned from database for diachrony");
 		if (items !== undefined) {
 			for (i in items) {
@@ -847,7 +820,7 @@ app
 							clustersSrc[src].addKernel(list, clustersTarget[target]);
 						}
 					}
-					database.find("clusterDesc").toArray(function(err, items) {
+					database.find("clusterDesc", currentDb).toArray(function(err, items) {
 						if (items !== undefined) {
 							for (i in items) {
 								if (items[i].period == resultats.psrc) {
@@ -889,7 +862,7 @@ app
 //---------------------DEFAULT---------------------------------------------------
 //---------------------DEFAULT---------------------------------------------------
 .use(function(req,res) {
-	res.redirect('/todo');
+	res.redirect('/');
 })
 
 
