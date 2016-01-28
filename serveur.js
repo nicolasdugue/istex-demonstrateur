@@ -38,8 +38,8 @@ page="accueil";
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/scripts'));
 
-app
-.use(express.cookieParser())
+app.use(express.cookieParser());
+app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 .use(express.bodyParser())
 .use(function(req,res,next) {
 	logger.info(req.url);
@@ -47,20 +47,33 @@ app
 })
 
 .use(function(req,res,next) {
+	if (req.session.currentDb !== undefined)
+		currentDb=req.session.currentDb;
+	next();
+})
+
+.use(function(req,res,next) {
 	database.find("experiment", currentDb).toArray(function(err, items) {
-		if (items.length > 0)
+		if (items.length > 0) {
 			resultats.experiment=items[items.length - 1].periodNumber;
+		}
 		else
 			resultats.experiment=2;
-
+		next();
 	});
-	next();
 })
 
 .get('/upload', function(req,res) {
 	page="upload";
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 })
+
+.get('/currentDb', function(req,res) {
+	req.session.currentDb=req.query.db;
+	page="upload";
+	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+})
+
 .get('/emptydb', function(req,res) {
 	database.clearAll();
 	page="upload";
