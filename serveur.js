@@ -47,6 +47,11 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 .use(function(req,res,next) {
+	logger.info(req.url);
+	next();
+})
+
+.use(function(req,res,next) {
 	if (req.session.currentDb !== undefined)
 		currentDb=req.session.currentDb;
 	resultats.currentDb=currentDb;
@@ -54,6 +59,18 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	next();
 })
 
+.use(function(req,res,next) {
+	resultats.listDb=[];
+	database.findNoDb("experiment").toArray(function(err, items) {
+		if (items !== undefined) {
+			for (it in items) {
+				resultats.listDb.push(items[it].database);
+			}
+		}
+		logger.debug(resultats.listDb);
+		next();
+	});
+})
 
 .use(function(req,res,next) {
 	database.find("experiment", currentDb).toArray(function(err, items) {
@@ -76,7 +93,16 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 })
 
-
+.post('/addExperiment', function(req, res) {
+	req.session.currentDb=req.body.expe;
+	resultats.currentDb=req.body.expe;
+	currentDb=resultats.currentDb;
+	if (req.body.expe != '') {
+		database.insert("experiment", {'periodNumber' : 3}, currentDb);
+		
+	}
+	res.redirect('/upload');
+})
 
 .get('/emptydb', function(req,res) {
 	database.clearAll();

@@ -20,9 +20,9 @@
                             <div class="input-group custom-search-form">
                                 <center><form><label for="db">Period considered <%= objectResult.currentDb %>: </label>
                                         <SELECT name="db" size="1" id="db">
-                                            <OPTION <% if (objectResult.currentDb == "demo") { %> SELECTED <% } %> > demo
-                                            
-                                            <OPTION <% if (objectResult.currentDb == "test") { %> SELECTED <% } %>  > test
+                                            <% for (i in objectResult.listDb) { %>
+                                                 <OPTION <% if (objectResult.currentDb == objectResult.listDb[i]) { %> SELECTED <% } %> > <%= objectResult.listDb[i]%>
+                                             <% }%>
                                         </SELECT></form>
                                     </center>
                             </div>
