@@ -70,8 +70,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 
 .get('/currentDb', function(req,res) {
 	req.session.currentDb=req.query.db;
-	page="upload";
-	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	res.redirect('/');
 })
 
 .get('/emptydb', function(req,res) {
