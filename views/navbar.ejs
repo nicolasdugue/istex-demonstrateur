@@ -18,12 +18,13 @@
                     <ul class="nav" id="side-menu">
                         <li class="sidebar-search">
                             <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
+                                <center><form><label for="db">Period considered <%= objectResult.currentDb %>: </label>
+                                        <SELECT name="db" size="1" id="db">
+                                            <OPTION <% if (objectResult.currentDb == "demo") { %> SELECTED <% } %> > demo
+                                            
+                                            <OPTION <% if (objectResult.currentDb == "test") { %> SELECTED <% } %>  > test
+                                        </SELECT></form>
+                                    </center>
                             </div>
                             <!-- /input-group -->
                         </li>
@@ -86,12 +87,6 @@
                                 <li>
                                     <a href="/emptydb">Clear database</a>
                                 </li>
-                                <li>
-                                    <a href="/currentDb?db=demo">Demo database</a>
-                                </li>
-                                <li>
-                                    <a href="/currentDb?db=test">Test database</a>
-                                </li>
                             </ul>
                         </li>
                         
@@ -101,3 +96,5 @@
             </div>
             <!-- /.navbar-static-side -->
         </nav>
+
+        

@@ -20,3 +20,8 @@
 
 	<!-- Metis Menu Plugin JavaScript -->
     <script src="js/metisMenu.min.js"></script>
+    <script type="text/javascript">
+            $("select#db").change(function(){
+                window.location="/currentDb?db="+$.trim(($(this).children(":selected").html()));
+            });
+        </script>

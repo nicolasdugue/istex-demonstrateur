@@ -49,8 +49,11 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 .use(function(req,res,next) {
 	if (req.session.currentDb !== undefined)
 		currentDb=req.session.currentDb;
+	resultats.currentDb=currentDb;
+	logger.debug("Current DB : " + currentDb);
 	next();
 })
+
 
 .use(function(req,res,next) {
 	database.find("experiment", currentDb).toArray(function(err, items) {
@@ -63,15 +66,17 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	});
 })
 
+.get('/currentDb', function(req,res) {
+	req.session.currentDb=req.query.db;
+	res.redirect('/');
+})
+
 .get('/upload', function(req,res) {
 	page="upload";
 	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 })
 
-.get('/currentDb', function(req,res) {
-	req.session.currentDb=req.query.db;
-	res.redirect('/');
-})
+
 
 .get('/emptydb', function(req,res) {
 	database.clearAll();
