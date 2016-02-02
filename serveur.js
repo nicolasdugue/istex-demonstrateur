@@ -186,10 +186,14 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 						clsSrc.period=srcPeriod;
 						clsSrc.features=[];
 					if (("Cluster source" in node) || ("Cluster Source" in node)) {
-						if ("Cluster source" in node)
+						if ("Cluster source" in node) {
 							clsSrc.name=node["Cluster source"];
-						else
+							clsSrc.label=node["name"];
+						}
+						else {
 							clsSrc.name=node["Cluster Source"];
+							clsSrc.label=node["Source Name"];
+						}
 					}
 					var clsTgt=Object();
 						clsTgt.sourceLinks=[];
@@ -209,6 +213,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 							src=data[srcPeriod][clsSrc.name];
 						}
 						clsTgt.name=node["Cluster Target"];
+						clsTgt.label=node["Target Name"];
 						clsTgt.period=tgtPeriod;
 						if (!(clsTgt.name in data[tgtPeriod])) {
 							data[tgtPeriod][clsTgt.name]=cpt;
