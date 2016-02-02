@@ -642,7 +642,8 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 				}
 			}
 		}
-		timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
+		resultats.data_timeline=data_timeline;
+		timeline.chart(resultats, list_period, 800, data_timeline.length*100+100, max, 30,res);
 	};
 	if (req.query.sort === undefined)
 		database.find("clusterFeatures", currentDb).sort({"FeatureName" : 1, "period" : 1}).toArray(createTimeline);
@@ -682,7 +683,8 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		var max=-1;
 		database.find("mapreduce", currentDb).sort({"value.FeatureWeight" : -1}).each(function (err, item) {
 			if (item == null) {
-				timeline.chart(data_timeline, list_period, 800, data_timeline.length*100+100, max, 30,res);
+				resultats.data_timeline=data_timeline;
+				timeline.chart(resultats, list_period, 800, data_timeline.length*100+100, max, 30,res);
 			}
 			if (item !== undefined) {
 				feature=Object();
@@ -914,4 +916,4 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 
-.listen(3000);
+.listen(8080);
