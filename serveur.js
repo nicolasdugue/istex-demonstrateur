@@ -98,12 +98,22 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	resultats.currentDb=req.body.expe;
 	currentDb=resultats.currentDb;
 	if (req.body.expe != '') {
+		where = Object();
+		where.database=currentDb;
+		database.remove("experiment", where);
 		database.insert("experiment", {'periodNumber' : 3}, currentDb);
 		
 	}
 	res.redirect('/upload');
 })
 
+.get('/emptycurrentdb', function(req,res) {
+	where=Object();
+	where.database=currentDb;
+	database.clearAllWhere(where);
+	page="upload";
+	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+})
 .get('/emptydb', function(req,res) {
 	database.clearAll();
 	page="upload";
@@ -281,6 +291,9 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 .post('/periodNumber', function(req, res) {
 	if (req.body.periodNumber != '') {
+		where = Object();
+		where.database=currentDb;
+		database.remove("experiment", where);
 		database.insert("experiment", {'periodNumber' : req.body.periodNumber}, currentDb);
 	}
 	res.redirect('/upload');
