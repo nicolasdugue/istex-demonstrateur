@@ -87,6 +87,13 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	});
 })
 
+.use(function(req,res,next) {
+	req.session.previousPageActuelle=req.session.previousPageSuivante;
+	req.session.previousPageSuivante=req.url;
+	logger.info(req.session.previousPageActuelle);
+	next();
+})
+
 .get('/emptycurrentdb', function(req,res) {
 	where=Object();
 	where.database=currentDb;
@@ -109,9 +116,12 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 .get('/currentDb', function(req,res) {
+	logger.debug(req.session.previousPage);
 	req.session.currentDb=req.query.db;
-	res.redirect('/');
+	res.redirect(req.session.previousPageActuelle);
 })
+
+
 
 .get('/upload', function(req,res) {
 	page="upload";
