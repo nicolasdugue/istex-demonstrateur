@@ -457,24 +457,29 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		new lazy(fs.createReadStream(req.files.dcsl.path))
 		.lines
 		.forEach(function(line){
-			if (line === undefined) {
-			}
-			else {
+			if (line !== undefined) {
 				line=line.toString();
 			    if (line.indexOf("Cl") != -1) {
-			    	clusterId=line.split(" ")[1];
+			    	tab=line.split(" ");
+			    	clusterId=tab[1];
 			    }
 			    else {
-			    	tab=line.split(" ");
-			    	if (tab.length == 2) {
-				    	featureWeight=tab[0];
-				    	featureName=tab[1];
-				    	database.insert("clusterFeatures", {'cluster' : clusterId, 'period' : req.body.periodNumber, 'FeatureWeight' : featureWeight, 'FeatureName' : featureName}, currentDb);
+			    	if (line.indexOf("C") != -1) {
+			    		tab=line.split(" ");
+			    		clusterId=tab[0].substring(1);
+			    		logger.debug(clusterId);
 			    	}
-			    }
+			    	else {
+				    	tab=line.split(" ");
+				    	if (tab.length == 2) {
+					    	featureWeight=tab[0];
+					    	featureName=tab[1];
+					    	database.insert("clusterFeatures", {'cluster' : clusterId, 'period' : req.body.periodNumber, 'FeatureWeight' : featureWeight, 'FeatureName' : featureName}, currentDb);
+				    	}
+			    	}
+				}
 			}
-		}
-		);
+		});
 		resultats.upload="Upload de "+req.files.dcsl.name+" réussi.";
 		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
 	}
