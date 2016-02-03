@@ -52,18 +52,14 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 .use(function(req,res,next) {
-	if (req.session.currentDb !== undefined)
-		currentDb=req.session.currentDb;
-	resultats.currentDb=currentDb;
-	logger.debug("Current DB : " + currentDb);
-	next();
-})
-
-.use(function(req,res,next) {
 	resultats.listDb=[];
 	database.findNoDb("experiment").toArray(function(err, items) {
+		first=true;
 		if (items !== undefined) {
 			for (it in items) {
+				if (first) {
+					currentDb=items[it].database;
+				}
 				resultats.listDb.push(items[it].database);
 			}
 		}
@@ -71,6 +67,16 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		next();
 	});
 })
+
+.use(function(req,res,next) {
+	if (req.session.currentDb !== undefined)
+		currentDb=req.session.currentDb;
+	resultats.currentDb=currentDb;
+	logger.debug("Current DB : " + currentDb);
+	next();
+})
+
+
 
 .use(function(req,res,next) {
 	database.find("experiment", currentDb).toArray(function(err, items) {
