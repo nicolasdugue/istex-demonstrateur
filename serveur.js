@@ -74,6 +74,15 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	next();
 })
 
+.use(function(req,res,next) {
+	if (req.session.nbLabel !== undefined)
+		resultats.nbLabel=req.session.nbLabel;
+	else {
+		req.session.nbLabel=2;
+	}
+	next();
+})
+
 
 
 .use(function(req,res,next) {
@@ -192,6 +201,9 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	});
 })
 .get('/sankey', function(req,res) {
+	if (req.query.nbLabel !== undefined) {
+		resultats.nbLabel=req.session.nbLabel=parseInt(req.query.nbLabel);
+	}
 	page="sankey";
 	database.find("diachrony", currentDb).toArray(function(err, items) {
 		logger.debug("Items returned from database for Sankey");

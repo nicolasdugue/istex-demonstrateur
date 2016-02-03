@@ -9,6 +9,18 @@
 	                        <div class="panel-heading">
 	                            <i class="fa fa-bar-chart-o fa-fw"></i> Global Sankey visualization
 	                            
+	                            <div class="pull-right">
+	                                <div class="btn-group">
+	                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+	                                        Select number of label in cluster name
+	                                        <span class="caret"></span>
+	                                    </button>
+	                                    <ul class="dropdown-menu pull-right" role="menu">
+	                                        <li><a href="/sankey?nbLabel=1"> 1</a>
+	                                        <li><a href="/sankey?nbLabel=2"> 2</a>
+	                                    </ul>
+	                                </div>
+	                            </div>
 	                        </div>
 	                        		<%- objectResult.svgsrc %>
 	                        <!-- /.panel-heading -->
