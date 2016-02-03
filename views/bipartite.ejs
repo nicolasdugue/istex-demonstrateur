@@ -119,7 +119,15 @@
 					targetW=obj[feature]["fTarget"];
 					content =content +"Label <b>"+label+"</b> is common to <span class='blueOfSrcList'>" + line.attr("src")+ " (" +srcW+")</span> and <span class='orangeOfTargetList'>"+ line.attr("target") +" ("+targetW+")</span><br />";
 				}
-				matching.innerHTML ="<b>Matching type : "+line.attr('matchingtype')+"</b><br /><br />"+content;
+				var m="";
+				if (line.attr('matchingtype') == "generalization")
+					m="Diversification from source to target";
+				else if (line.attr('matchingtype') == "specialization")
+					m="Focus from source to target";
+				else
+					m="Bidirectional";
+
+				matching.innerHTML ="<b>Matching type : "+m+"</b><br /><br />"+content;
 
 				$.ajax({
 				       url : '/getCluster',
