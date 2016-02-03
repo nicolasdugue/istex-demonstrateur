@@ -122,7 +122,11 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 .get('/getCluster', function(req,res) {
 	database.find("clusterDesc", currentDb).toArray(function(err, items) {
 		if (items !== undefined) {
-			resultats.cluster=req.query.cluster.slice(-1);
+			if (req.query.cluster.indexOf("Classe") == -1) {
+				resultats.cluster=req.query.cluster.split("-")[0].substring(1);
+			}
+			else
+				resultats.cluster=req.query.cluster.slice(-1);
 			resultats.period=req.query.period;
 			var data_cluster=Object();
 			logger.debug("Cluster : " +resultats.cluster);
@@ -255,7 +259,12 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 					sankey.chart(resultats,energy,1000,800,60,res);
 				}
 				where=Object();
-				where.cluster=energy.nodes[i].name.slice(-1);
+				if (energy.nodes[i].name.indexOf("Classe") == -1 ) {
+					where.cluster=energy.nodes[i].name.split(" ")[0].substring(1);
+				}
+				else {
+					where.cluster=energy.nodes[i].name.slice(-1);
+				}
 				where.period=energy.nodes[i].period;
 				database.findWhere("clusterFeatures", where, currentDb ).sort({"FeatureWeight" : -1}).toArray(function(err, items) {
 					if (items !== undefined) {
@@ -503,6 +512,9 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	}
 	if (req.query.cluster !== undefined) {
 		resultats.cluster=req.query.cluster;
+	}
+	else {
+		resultats.cluster="0";
 	}
 	resultats.clusters={};
 	var data_cluster=[];
