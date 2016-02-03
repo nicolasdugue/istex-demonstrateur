@@ -46,10 +46,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	next();
 })
 
-.use(function(req,res,next) {
-	logger.info(req.url);
-	next();
-})
+
 
 .use(function(req,res,next) {
 	resultats.listDb=[];
@@ -59,6 +56,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 			for (it in items) {
 				if (first) {
 					currentDb=items[it].database;
+					first=false;
 				}
 				resultats.listDb.push(items[it].database);
 			}
@@ -89,6 +87,27 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	});
 })
 
+.get('/emptycurrentdb', function(req,res) {
+	where=Object();
+	where.database=currentDb;
+	database.clearAllWhere(where);
+	var index=resultats.listDb.indexOf(currentDb);
+	if(index!==-1) {
+	    resultats.listDb.splice(index, 1);
+	}
+	if (resultats.listDb.length > 0)
+		resultats.currentDb=currentDb=req.session.currentDb=resultats.listDb[0];
+	else
+		resultats.listDb=currentDb=req.session.currentDb=undefined;
+	res.redirect('/upload');
+})
+.get('/emptydb', function(req,res) {
+	database.clearAll();
+	resultats.listDb=[];
+	resultats.listDb=currentDb=req.session.currentDb=undefined;
+	res.redirect('/upload');
+})
+
 .get('/currentDb', function(req,res) {
 	req.session.currentDb=req.query.db;
 	res.redirect('/');
@@ -104,27 +123,13 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	resultats.currentDb=req.body.expe;
 	currentDb=resultats.currentDb;
 	if (req.body.expe != '') {
-		where = Object();
-		where.database=currentDb;
-		database.remove("experiment", where);
 		database.insert("experiment", {'periodNumber' : 3}, currentDb);
 		
 	}
 	res.redirect('/upload');
 })
 
-.get('/emptycurrentdb', function(req,res) {
-	where=Object();
-	where.database=currentDb;
-	database.clearAllWhere(where);
-	page="upload";
-	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-})
-.get('/emptydb', function(req,res) {
-	database.clearAll();
-	page="upload";
-	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
-})
+
 .get('/getCluster', function(req,res) {
 	database.find("clusterDesc", currentDb).toArray(function(err, items) {
 		if (items !== undefined) {
