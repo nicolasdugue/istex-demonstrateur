@@ -88,9 +88,11 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 .use(function(req,res,next) {
-	req.session.previousPageActuelle=req.session.previousPageSuivante;
-	req.session.previousPageSuivante=req.url;
-	logger.info(req.session.previousPageActuelle);
+	if (req.url.indexOf("getCluster") == -1) {
+		req.session.previousPageActuelle=req.session.previousPageSuivante;
+		req.session.previousPageSuivante=req.url;
+		logger.info(req.session.previousPageActuelle);
+	}
 	next();
 })
 
