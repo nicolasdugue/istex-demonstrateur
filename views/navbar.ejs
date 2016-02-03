@@ -18,7 +18,7 @@
                     <ul class="nav" id="side-menu">
                         <li class="sidebar-search">
                             <div class="input-group custom-search-form">
-                                <center><form><label for="db">Period considered <%= objectResult.currentDb %>: </label>
+                                <center><form><label for="db">Experiment considered : </label>
                                         <SELECT name="db" size="1" id="db">
                                             <% for (i in objectResult.listDb) { %>
                                                  <OPTION <% if (objectResult.currentDb == objectResult.listDb[i]) { %> SELECTED <% } %> > <%= objectResult.listDb[i]%>
@@ -85,7 +85,10 @@
                                     <a href="/upload">Upload files</a>
                                 </li>
                                 <li>
-                                    <a href="/emptydb">Clear database</a>
+                                    <a href="/emptycurrentdb">Clear current database (<%= objectResult.currentDb %>)</a>
+                                </li>
+                                <li>
+                                    <a href="/emptydb">Clear all</a>
                                 </li>
                             </ul>
                         </li>
