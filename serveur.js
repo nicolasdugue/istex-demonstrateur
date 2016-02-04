@@ -158,7 +158,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 				resultats.cluster=req.query.cluster.split("-")[0].substring(1);
 			}
 			else
-				resultats.cluster=req.query.cluster.slice(-1);
+				resultats.cluster=req.query.cluster.split("-")[0].slice(-1);
 			resultats.period=req.query.period;
 			var data_cluster=Object();
 			logger.debug("Cluster : " +resultats.cluster);
