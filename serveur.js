@@ -964,7 +964,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 								}
 							}
 						}
-						bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,50,12, res);
+						bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,45,12, res);
 					});
 					break;
 				}
