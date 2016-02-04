@@ -903,21 +903,21 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 						cluster=parsedJSON[i];
 						if ("state" in cluster) {
 							if (cluster.state =="appeared") {
-								target=cluster["Cluster target"] + " - " + cluster["name"];
+								target=cluster["Cluster target"] + " - " + cluster["name"].replace(" ", "/");
 								appeared=new model.Cluster(target);
 								appeared.addStateAppeared();
 								clustersAppeared.push(appeared);
 							}
 							else {
-								src=cluster["Cluster source"]+ " - " + cluster["name"];
+								src=cluster["Cluster source"]+ " - " + cluster["name"].replace(" ", "/");
 								vanished=new model.Cluster(src);
 								vanished.addStateVanished();
 								clustersVanished.push(vanished);
 							}
 						}
 						else {
-							src=cluster["Cluster Source"] + " - " + cluster["Source Name"];
-							target=cluster["Cluster Target"]+ " - " + cluster["Target Name"];
+							src=cluster["Cluster Source"] + " - " + cluster["Source Name"].replace(" ", "/");
+							target=cluster["Cluster Target"]+ " - " + cluster["Target Name"].replace(" ", "/");
 							kernels=cluster["Kernel Labels"];
 							if (typeof(clustersSrc[src]) == "undefined") {
 								clustersSrc[src] = new model.Cluster(src);
