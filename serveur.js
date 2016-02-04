@@ -889,6 +889,10 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 .get('/diachronie', function(req,res){
 	database.find("diachrony", currentDb).toArray(function(err, items) {
 		logger.debug("Items returned from database for diachrony");
+		resultats.labels=1;
+		if (req.query.labels !== undefined) {
+			resultats.labels=req.query.labels;
+		}
 		if (items !== undefined) {
 			for (i in items) {
 				if (req.query.src === undefined || req.query.tgt === undefined || (req.query.src == items[i].srcPeriod &&  req.query.tgt == items[i].targetPeriod)) {
@@ -964,7 +968,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 								}
 							}
 						}
-						bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,45,12, res);
+						bipartite.chart(resultats, clustersSrc,clustersTarget,clustersAppeared,clustersVanished, 1200, 400,40,16, res);
 					});
 					break;
 				}
