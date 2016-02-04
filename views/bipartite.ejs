@@ -121,6 +121,7 @@
 			function mouseoverLine() {
 				var line = d3.select(this);
 				opacityHigh(line);
+				console.log("#"+line.attr("src")+line.attr("target"));
 				text=d3.select("#"+line.attr("src")+line.attr("target"));
 				opacityHigh(text);
 				obj=JSON.parse(line.attr("kernel"));
@@ -138,6 +139,7 @@
 					m="Focus from source to target";
 				else
 					m="Bidirectional";
+
 
 				matching.innerHTML ="<b>Matching type : "+m+"</b><br /><br />"+content;
 
