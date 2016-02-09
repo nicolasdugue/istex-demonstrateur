@@ -8,7 +8,7 @@ This Visualization tool is a webapp which is designed with NodeJS and D3.
 
 ##Demo 
 
-A demo could be found at http://83b5c216.ngrok.io/currentDb=2tiers1tiers
+A demo could be found at http://83b5c216.ngrok.io/currentDb?db=2tiers1tiers
 
 ##INSTALL
 
