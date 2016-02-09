@@ -6,6 +6,10 @@ Diachronic'Explorer is a project which aims to deal with documents corpora such 
 
 This Visualization tool is a webapp which is designed with NodeJS and D3.
 
+##Demo 
+
+A demo could be found at http://83b5c216.ngrok.io/currentDb=2tiers1tiers
+
 ##INSTALL
 
 ###Install NodeJs 4 
