@@ -26,4 +26,10 @@ and then:
 
 Download the archive and run :
 
+        npm install
+to install all nodeJs packages required.
+
+Afterwards, run 
+
         node serveur.js at the root of the folder
+to launch the web app !
