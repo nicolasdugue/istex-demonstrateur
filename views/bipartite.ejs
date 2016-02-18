@@ -246,4 +246,22 @@
 				});
 			});
 
+
+			
+		function mouseClick() {
+			var rect = d3.select(this);
+			var cluster;
+			if (rect.attr("title").indexOf("Classe") == -1 ) {
+				cluster=rect.attr("title").split("-")[0].split(" ")[0].substring(1);
+			}
+			else {
+				cluster=rect.attr("title").split("-")[0].slice(-1);
+			}
+			location.href="/istexDoc?period="+rect.attr("period")+"&cluster="+cluster;
+		};
+		var rects = d3.selectAll("circle");
+		rects.on("click", mouseClick);
+		rects.on("mouseover", function() { d3.select(this).style("cursor", 'pointer');});
+
+
 		</script>
