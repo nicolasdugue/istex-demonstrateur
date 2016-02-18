@@ -33,3 +33,16 @@
 
                 
             </div>
+
+    <script type="text/javascript">
+			
+			function mouseClick() {
+				var rect = d3.select(this);
+				console.log(rect);
+				location.href="/istexDoc?period="+rect.attr("period")+"&cluster="+rect.attr("cluster");
+			};
+			var rects = d3.selectAll("rect");
+			rects.on("click", mouseClick);
+			rects.on("mouseover", function() { d3.select(this).style("cursor", 'pointer');});
+
+		</script>
