@@ -464,7 +464,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 
 .post('/uploadSclu', function(req, res) {
 	name=req.files.sclu.name;
-	page="upload";
+	//page="upload#sclu";
 	if (name.indexOf(".sclu") > -1) {
 		logger.debug(req.files.sclu.name);
 		logger.debug(req.files.sclu.path);
@@ -484,16 +484,15 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		}
 		);
 		resultats.upload="Upload de "+req.files.sclu.name+" réussi.";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		res.redirect("upload#sclu");
 	}
 	else {
 		resultats.upload="Upload de "+req.files.sclu.name+" : échec. Le fichier n'a pas l'extension sclu !";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		res.redirect("upload#sclu");
 	}
 })
 .post('/uploadDcsl', function(req, res) {
 	name=req.files.dcsl.name;
-	page="upload";
 	if (name.indexOf(".dcsl") > -1) {
 		logger.debug(req.files.dcsl.name);
 		logger.debug(req.files.dcsl.path);
@@ -525,11 +524,11 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 			}
 		});
 		resultats.upload="Upload de "+req.files.dcsl.name+" réussi.";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		res.redirect("upload#dcsl");
 	}
 	else {
 		resultats.upload="Upload de "+req.files.dcsl.name+" : échec. Le fichier n'a pas l'extension sclu !";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		res.redirect("upload#dcsl");
 	}
 })
 
@@ -865,7 +864,6 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 //---------------------/diachro---------------------------------------------------
 .post('/uploadJson', function(req, res) {
 	name=req.files.jsond.name;
-	page="upload";
 	if (name.indexOf(".json") > -1) {
 		logger.debug(req.files.jsond.name);
 		logger.debug(req.files.jsond.path);
@@ -878,11 +876,11 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 			database.insert("diachrony", {'srcPeriod' : req.body.periodNumberSrc, 'targetPeriod' : req.body.periodNumberTarget, 'json' : JSON.parse(data.toString())}, currentDb);
 		});
 		resultats.upload="Upload de "+req.files.jsond.name+" réussi.";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		res.redirect("upload#json");
 	}
 	else {
 		resultats.upload="Upload de "+req.files.jsond.name+" : échec. Le fichier n'a pas l'extension sclu !";
-		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+		res.redirect("upload#json");
 	}
 })
 
