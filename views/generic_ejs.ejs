@@ -124,6 +124,11 @@
 			%>
 			<% include embeddedCircle.ejs %>
 			<%
+			}
+			else if (page=="istex") {
+			%>
+			<% include istex.ejs %>
+			<%
 			} 
 			else if (page=="marimekko") {
 			%>
@@ -160,7 +165,7 @@
 			<% include clusterstat.ejs %>
 			<%
 			}
-		else if (page=="sankey") {
+			else if (page=="sankey") {
 			%>
 			<% include sankey.ejs %>
 			<%

@@ -563,22 +563,39 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 
+
+.get('/istexDoc', function(req, res) {
+	page="istex";
+	where=Object();
+	if (req.query.period !== undefined) {
+		where.period=resultats.period=req.query.period;
+	}
+	if (req.query.cluster !== undefined) {
+		where.cluster=resultats.cluster=req.query.cluster;
+	}
+	database.findWhere("clusterDocs",where, currentDb).sort({period : 1, cluster : 1}).toArray(function(err, items) {
+		resultats.doc=items;
+		res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+	});
+})
+
 //---------------------/clusterbarchart---------------------------------------------------
 //---------------------/clusterbarchart---------------------------------------------------
 //---------------------/clusterbarchart---------------------------------------------------
 .get('/clusterbarchart', function(req,res){
 	resultats.page='clusterbarchart';
+	where=Object();
 	if (req.query.period === undefined) {
-		resultats.period="1";
+		where.period=resultats.period="1";
 	}
 	else {
-		resultats.period=req.query.period;
+		where.period=resultats.period=req.query.period;
 	}
 	if (req.query.cluster !== undefined) {
-		resultats.cluster=req.query.cluster;
+		where.cluster=resultats.cluster=req.query.cluster;
 	}
 	else {
-		resultats.cluster="0";
+		where.cluster=resultats.cluster="0";
 	}
 	resultats.clusters={};
 	var data_cluster=[];
