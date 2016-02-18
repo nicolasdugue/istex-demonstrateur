@@ -113,6 +113,37 @@
                     </div>
                  </div>
 
+            <div class="col-lg-12">
+                    <div class="panel panel-default" id="pelm">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw">Step 2 : Upload <b>pelm</b> for each period</i>
+                        </div>
+                            <center>
+                                <form action="uploadPelm"
+                                    enctype="multipart/form-data" method="post">
+                                    <p>
+                                    <label for="periodNumber">Period considered :</label>
+                                    <SELECT name="periodNumber" size="1">
+                                        <% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+                                            <OPTION> <%= i%>
+                                        <% }%>
+                                    </SELECT>
+                                    </p>
+                                    <p>
+                                    <label for="pelm">Chose the pelm file to submit :</label>
+                                    <input type="file" name="pelm">
+                                    </p>
+                                    <input type="submit" value="Upload">
+                                </form>
+                            </center>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="morris-area-chart"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                 </div>
+
             <div class="col-lg-12" >
                     <div class="panel panel-default" id="dcsl">
                         <div class="panel-heading">

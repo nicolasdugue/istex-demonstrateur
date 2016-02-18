@@ -491,6 +491,36 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		res.redirect("upload#sclu");
 	}
 })
+
+.post('/uploadPelm', function(req, res) {
+	name=req.files.pelm.name;
+	//page="upload#sclu";
+	if (name.indexOf(".pelm") > -1) {
+		logger.debug(req.files.pelm.name);
+		logger.debug(req.files.pelm.path);
+		logger.debug(req.files.pelm.type);
+		logger.debug(req.files.pelm.size);
+		new lazy(fs.createReadStream(req.files.pelm.path))
+		.lines
+		.forEach(function(line){
+			line=line.toString();
+		    if (line.indexOf("labels") == -1) {
+		    	tab=line.split(" ");
+		    	cl=tab[0];
+		    	idIstex=tab[3];
+		    	database.insert("clusterDocs", {'cluster' : cl, 'period' : req.body.periodNumber, 'idIstex' : idIstex}, currentDb);
+		    }
+		}
+		);
+		resultats.upload="Upload de "+req.files.pelm.name+" réussi.";
+		res.redirect("upload#pelm");
+	}
+	else {
+		resultats.upload="Upload de "+req.files.pelm.name+" : échec. Le fichier n'a pas l'extension sclu !";
+		res.redirect("upload#pelm");
+	}
+})
+
 .post('/uploadDcsl', function(req, res) {
 	name=req.files.dcsl.name;
 	if (name.indexOf(".dcsl") > -1) {
