@@ -1,0 +1,119 @@
+
+			<div class="row">
+	            <div class="col-lg-12">
+	                <h1 class="page-header"> Thematics and keywords across time</h1>
+	            </div>
+	        </div>
+	        <div class="row">
+	                    <div class="panel panel-default">
+	                        <div class="panel-heading">
+	                            <i class="fa fa-bar-chart-o fa-fw"></i> Graph visualization
+	                            
+	                        </div>
+	                        <div id='result'>
+
+	                        </div>
+	                        <!-- /.panel-heading -->
+	                        <div class="panel-body">
+	                            <div id="morris-area-chart"></div>
+	                        </div>
+	                        <!-- /.panel-body -->
+	                    </div>
+                </div>
+
+                
+            </div>
+
+    <script type="text/javascript">
+    	var width = 1100,
+		    height = 900;
+
+		var color = d3.scale.category10();
+
+
+		var svg = d3.select("#result").append("svg").
+		    attr("preserveAspectRatio", "xMinYMin meet")
+                         .attr("viewBox", "0 0 "+width+" "+height).style("padding","10px");
+
+		$.ajax({
+	       url : '/get_graph',
+	       type : 'GET',
+	       success : function(graph){
+	       		var force = d3.layout.force()
+				    .gravity(0.03)
+		    		.distance(50)
+		    		.charge(-80)
+				    .size([width, height]);
+				force
+					.nodes(graph.nodes)
+					.links(graph.links)
+					.start();
+
+				var link = svg.selectAll(".link")
+					.data(graph.links)
+					.enter().append("line")
+					.attr("class", "link")
+					.style("stroke-width", function(d) { return d.w /2; });
+
+				var node = svg.selectAll(".node")
+					.data(graph.nodes)
+					.enter()
+					.append("g")
+					.attr("class", "node")
+      				.call(force.drag);
+					
+				node.append("circle")
+				.attr("r", function(d) { 
+						if ("period" in d) {
+							return 12; 
+						}
+						else  {
+							return d.link * 3; 
+						}
+					})
+				.style("fill", function(d) { 
+						if ("period" in d) {
+							return color(d.period); 
+						}
+						else  {
+							return color(8); 
+						}
+					})
+				.style("fill-opacity", function(d) { 
+						if ("period" in d) {
+							return "0.7"
+						}
+						else  {
+							return "0.20"
+						}
+				}
+				)
+				.style("stroke", function(d) { 
+						if ("period" in d) {
+							return color(d.period); 
+						}
+						else  {
+							return color(8); 
+						}
+					})
+				;
+				node.append("text")
+      				.attr("dx", 12)
+      				.attr("dy", ".35em")
+      				.text(function(d) { if ("feature" in d) return d.feature; else return "C "+d.cluster + " P"+d.period; });
+
+				force.on("tick", function() {
+					link.attr("x1", function(d) { return d.source.x; })
+					.attr("y1", function(d) { return d.source.y; })
+					.attr("x2", function(d) { return d.target.x; })
+					.attr("y2", function(d) { return d.target.y; });
+
+
+					node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+				});
+	       	}
+		});
+
+
+	</script>

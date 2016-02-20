@@ -97,7 +97,7 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 })
 
 .use(function(req,res,next) {
-	if (req.url.indexOf("getCluster") == -1) {
+	if ((req.url.indexOf("getCluster") == -1) && (req.url.indexOf("get_graph") == -1)) {
 		req.session.previousPageActuelle=req.session.previousPageSuivante;
 		req.session.previousPageSuivante=req.url;
 		logger.info(req.session.previousPageActuelle);
@@ -319,6 +319,58 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 	});
 
 
+})
+
+.get('/graph', function(req,res) {
+	page="graph";
+	res.render('generic_ejs.ejs', {objectResult: resultats, page : page});
+})
+
+.get('/get_graph', function(req,res) {
+	graph=Object();
+	graph.nodes=[];
+	graph.links=[];
+	nodes={};
+	nodes.features={};
+	cpt=0;
+	if (req.query.nbLabel !== undefined) {
+		resultats.nbLabel=req.session.nbLabel=parseInt(req.query.nbLabel);
+	}
+
+	database.find("clusterFeatures", currentDb ).toArray(function(err, items) {
+		if (items !== undefined) {
+			for (it in items) {
+				feature=items[it];
+				if (!(feature.period in nodes)) {
+					nodes[feature.period]={};
+				}
+				if (!(feature.cluster in nodes[feature.period])) {
+					node=Object();
+					node.cluster= feature.cluster;
+					node.period=feature.period;
+					graph.nodes.push(node);
+
+					nodes[feature.period][feature.cluster]=cpt;
+					cpt++;
+				}
+				if (!(feature.FeatureName in nodes.features)) {
+					node=Object();
+					node.feature= feature.FeatureName;
+					node.link=1;
+
+					graph.nodes.push(node);
+					nodes["features"][feature.FeatureName]=cpt;
+					cpt++;
+				}
+				else {
+					graph.nodes[nodes["features"][feature.FeatureName]].link++;
+				}
+
+				graph.links.push({"source" : nodes[feature.period][feature.cluster], "target" : nodes["features"][feature.FeatureName], "w" : parseFloat(feature.FeatureWeight)});
+			}
+			res.send(graph);
+		}
+	});
 })
 
 
