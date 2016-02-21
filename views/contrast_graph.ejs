@@ -25,15 +25,16 @@
             </div>
 
     <script type="text/javascript">
-    	var width = 1100,
-		    height = 900;
+    	var width = 1800,
+		    height = 1000;
 
 		var color = d3.scale.category10();
 
 
 		var svg = d3.select("#result").append("svg").
 		    attr("preserveAspectRatio", "xMinYMin meet")
-                         .attr("viewBox", "0 0 "+width+" "+height).style("padding","10px");
+            .attr("viewBox", "0 0 "+width+" "+height).style("padding","10px")
+            .call(d3.behavior.zoom().scaleExtent([1, 5]).on("zoom", zoom));
 
 		$.ajax({
 	       url : '/get_graph',
@@ -114,6 +115,10 @@
 				});
 	       	}
 		});
+
+		function zoom() {
+		  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+		}
 
 
 	</script>
