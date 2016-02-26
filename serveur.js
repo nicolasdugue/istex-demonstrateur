@@ -129,7 +129,10 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 .get('/currentDb', function(req,res) {
 	logger.debug(req.session.previousPage);
 	req.session.currentDb=req.query.db;
-	res.redirect(req.session.previousPageActuelle);
+	if (req.session.previousPageActuelle !== undefined)
+		res.redirect(req.session.previousPageActuelle);
+	else
+		res.redirect("/");
 })
 
 
