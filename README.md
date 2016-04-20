@@ -33,3 +33,4 @@ Afterwards, run
 
         node serveur.js at the root of the folder
 to launch the web app !
+To connect to the app, use the port 3000 (ex : http://localhost:3000/)
