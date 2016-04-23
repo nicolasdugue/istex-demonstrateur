@@ -560,10 +560,12 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		.forEach(function(line){
 			line=line.toString();
 		    if (line.indexOf("labels") == -1) {
-		    	tab=line.split(" ");
-		    	cl=tab[0];
-		    	idIstex=tab[3];
-		    	database.insert("clusterDocs", {'cluster' : cl, 'period' : req.body.periodNumber, 'idIstex' : idIstex}, currentDb);
+		    	tab=line.split("\t");
+		    	cl=tab[1];
+		    	idIstex=tab[0];
+		    	title=tab[3]
+		    	year=tab[2]
+		    	database.insert("clusterDocs", {'cluster' : cl, 'period' : req.body.periodNumber, 'idIstex' : idIstex, 'year' : year, 'title' : title}, currentDb);
 		    }
 		}
 		);
