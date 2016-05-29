@@ -813,6 +813,8 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		resultats.data_timeline=data_timeline;
 		timeline.chart(resultats, list_period, 800, data_timeline.length*100+100, max, 30,res);
 	};
+	delete resultats.cperiod;
+	delete resultats.wordsTimeLine;
 	if (req.query.sort === undefined)
 		database.find("clusterFeatures", currentDb).sort({"FeatureName" : 1, "period" : 1}).toArray(createTimeline);
 	else {
@@ -880,6 +882,64 @@ app.use(express.session({secret: 'abrqtkkeijjkeldcfg'}))
 		});
 	
 	}
+
+	//data_timeline=[{"frequency" : [["P1",250],["P2",300],["P3",400]], "total": 950, "name": "Caregiver"},{"frequency" : [["P1",125],["P2",100],["P3",25]], "total": 250, "name": "Nurse"},{"frequency" : [["P1",175],["P2",135],["P3",125]], "total": 435, "name": "Brain"},{"frequency" : [["P1",125],["P2",175],["P3",25]], "total": 250, "name": "Liver"},{"frequency" : [["P1",125],["P2",175],["P3",225]], "total": 250, "name": "Blood"},{"frequency" : [["P1",125],["P2",175],["P3",325]], "total": 250, "name": "Cancer"}];
+	//timeline.chart(data_timeline, 1000, 600, 2005, 2013, 30,res);
+})
+
+.get('/wordstime', function(req,res){
+	//Not supported with TingoDB, but it would be with MongoDB
+	/*database.aggregate("clusterFeatures", { '_id' : 'FeatureName', 'SumWeight' : {"$sum" : 'FeatureWeight'} }).sort("{SumWeight : 1}").toArray(function(err, items) {
+		if (items !== undefined) {
+			for (it in items) {
+				logger.debug(items[it]);
+			}
+		}
+	});*/
+	var createTimeline2= function(err, items) {
+		data_timeline=[];
+		var periods={};
+		var list_period=[];
+		if (items !== undefined) {
+			var name="";
+			var max=-1;
+			feature=undefined;
+			for (it in items) {
+				line=items[it];
+				if (line.FeatureName != name) {
+					if (feature !== undefined) {
+						data_timeline.push(feature);
+					}
+					feature=Object();
+					feature.frequency=[];
+					feature.name=line.FeatureName;
+					name=line.FeatureName;
+					feature.total=0;
+				}
+				weight=parseFloat(line.FeatureWeight);
+				if (weight > max) {
+					max=weight;
+				}
+				feature.total=feature.total+weight;
+				feature.frequency.push(["P"+line.period+"", weight]);	
+				if (!(line.period in periods)) {
+					periods[line.period]=true;
+					list_period.push(line.period);
+				}
+			}
+		}
+		resultats.data_timeline=data_timeline;
+		resultats.wordsTimeLine=true;
+		resultats.cperiod=list_period[0];
+		timeline.chart(resultats, list_period, 800, data_timeline.length*100+100, max, 30,res);
+	};
+	where=Object();
+	if (req.query.period == undefined)
+		where.period="1";
+	else
+		where.period=req.query.period;
+	database.findWhere("clusterFeatures", where, currentDb).sort({"FeatureWeight" : -1}).toArray(createTimeline2);
+	
 
 	//data_timeline=[{"frequency" : [["P1",250],["P2",300],["P3",400]], "total": 950, "name": "Caregiver"},{"frequency" : [["P1",125],["P2",100],["P3",25]], "total": 250, "name": "Nurse"},{"frequency" : [["P1",175],["P2",135],["P3",125]], "total": 435, "name": "Brain"},{"frequency" : [["P1",125],["P2",175],["P3",25]], "total": 250, "name": "Liver"},{"frequency" : [["P1",125],["P2",175],["P3",225]], "total": 250, "name": "Blood"},{"frequency" : [["P1",125],["P2",175],["P3",325]], "total": 250, "name": "Cancer"}];
 	//timeline.chart(data_timeline, 1000, 600, 2005, 2013, 30,res);

@@ -5,21 +5,38 @@
 	        </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i>Labels
-                            <div class="pull-right">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                        Sort
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right" role="menu">
-                                        <li><a href="/timeline">Alphabetic</a>
-                                        </li>
-                                        <li><a href="/timeline?sort">By weight</a>
-                                        </li>
-                                    </ul>
+                            <i class="fa fa-bar-chart-o fa-fw"></i>Labels <% if (objectResult.cperiod !== undefined) {%> from period <%= objectResult.cperiod %> <% } %>
+                            <% if (objectResult.wordsTimeLine === undefined) {%>
+                                <div class="pull-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                            Sort
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <li><a href="/timeline">Alphabetic</a>
+                                            </li>
+                                            <li><a href="/timeline?sort">By weight</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                            <% } else {%>
+                                <div class="pull-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                            Select period
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <% for (var i=1; i <= objectResult.experiment; i++ ) {%>
+                                            <li><a href="wordstime?period=<%= i%>">Period <%= i%></a></li>
+                                        <% }%>
+                                        </ul>
+                                    </div>
+                                </div>
+                            <% } %>
                         </div>
                         	<center>
                         		<%- objectResult.svgsrc %>
