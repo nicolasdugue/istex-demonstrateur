@@ -8,7 +8,7 @@ This Visualization tool is a webapp which is designed with NodeJS and D3.
 
 ##Demo 
 
-A demo could be found at http://107.170.67.36:3000/
+A demo could be found at http://diachronic-explorer.dpi.inist.fr/
 
 ##INSTALL
 
