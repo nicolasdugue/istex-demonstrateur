@@ -6,13 +6,13 @@ Diachronic'Explorer is a project which aims to deal with documents corpora such 
 
 This Visualization tool is a webapp which is designed with NodeJS and D3.
 
-##Demo 
+## Demo 
 
 A demo could be found at http://diachronic-explorer.dpi.inist.fr/
 
-##INSTALL
+## INSTALL
 
-###Install NodeJs 4 
+### Install NodeJs 4 
 
 Instructions were taken from here: https://github.com/nodesource/distributions
 
@@ -22,7 +22,7 @@ and then:
 
     sudo apt-get install --yes nodejs
 
-###Install and run the app
+### Install and run the app
 
 Download the archive and run :
 
