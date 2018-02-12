@@ -12,15 +12,25 @@ A demo could be found at http://diachronic-explorer.dpi.inist.fr/
 
 ## INSTALL
 
-### Install NodeJs 4 
+### Install NodeJs 4 using Node Version Manager
 
-Instructions were taken from here: https://github.com/nodesource/distributions
+Download Node Version manager
 
-    wget -qO- https://deb.nodesource.com/setup_4.x | sudo bash -
+    curl https://raw.githubusercontent.com/creationix/nvm/v0.15.0/install.sh | bash
 
-and then:
+Activate it
 
-    sudo apt-get install --yes nodejs
+    source ~/.nvm/nvm.sh
+    
+Then install Node 4 using the nvm : 
+
+    nvm install 4.0
+    
+If it was correctly installed, you sould be able to run this and to see : 
+
+    $ node -v
+    v4.0.0
+
 
 ### Install and run the app
 
